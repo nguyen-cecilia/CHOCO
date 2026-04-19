@@ -1,3 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import "tailwindcss";
+
+@import "./assets/styles/fonts.css";
+@import "./assets/styles/base.css";
+
+@theme {
+    /* COLORS */
+    --color-brown: #3F2621;
+    --color-pink: #DC6382;
+    --color-purple: #7B44A6;
+    --color-purple-light: #CBB3D4;
+    --color-blue: #477CE9;
+    --color-blue-light: #AAC6E3;
+    --color-green: #B5D240;
+    --color-yellow: #FBBC25;
+    --color-beige-light: #FFF8EB;
+    --color-orange: #E7631B;
+    --color-red: #BF2222;
+
+    /* FONTS */
+    --font-sans: 'Lexend', sans-serif;
+    --font-display: 'Averia Serif Libre', serif;
+
+    --text-*: initial;
+    --text-xxs: 11px;
+    --text-xs: 13px;
+    --text-sm: 14px;
+    --text-base: 16px;
+    --text-md: 20px;
+    --text-lg: 28px;
+    --text-xl: 32px;
+    --text-2xl: 54px;
+
+    /* RADIUS */
+    --radius: 20px;
+    --radius-full: 999px;
+}

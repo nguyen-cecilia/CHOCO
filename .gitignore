@@ -37,7 +37,11 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+.secret.txt
 
 # System files
 .DS_Store
 Thumbs.db
+
+environment.prod.ts
+environment.ts

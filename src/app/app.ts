@@ -1,12 +1,13 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component, signal} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {Button} from './shared/components/button/button';
+import {LucidePlus} from '@lucide/angular';
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+    selector: 'app-root',
+    imports: [RouterOutlet, Button, LucidePlus],
+    templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('choco');
+    protected readonly title = signal('choco');
 }

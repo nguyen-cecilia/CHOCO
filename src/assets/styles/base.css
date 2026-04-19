@@ -1,0 +1,17 @@
+@layer base {
+    body {
+        @apply font-sans text-base font-normal text-brown;
+    }
+
+    h1 {
+        @apply font-display text-xl tracking-tighter;
+    }
+
+    h2 {
+        @apply font-display text-lg tracking-tighter;
+    }
+
+    h3 {
+        @apply font-display text-md;
+    }
+}

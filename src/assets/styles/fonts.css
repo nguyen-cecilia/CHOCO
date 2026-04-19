@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'Averia Serif Libre';
+    font-weight: bold;
+    font-style: italic;
+    src: url('../fonts/AveriaSerifLibre-BoldItalic.ttf');
+}
+
+@font-face {
+    font-family: 'Lexend';
+    src: url('../fonts/Lexend-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-weight: 500;
+    src: url('../fonts/Lexend-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-weight: 600;
+    src: url('../fonts/Lexend-Bold.ttf');
+}
