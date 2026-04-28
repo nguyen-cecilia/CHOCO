@@ -1,0 +1,35 @@
+<div class="space-y-4">
+    @if (_avatarUrl() && !loading()) {
+        <img
+            [src]="_avatarUrl()"
+            alt="Avatar"
+            class="size-36 object-cover rounded-sm"
+        />
+    }
+
+    @if (!_avatarUrl() || loading()) {
+        <div class="bg-brown text-white flex justify-center items-center size-36 rounded-sm">
+            @if (loading()) {
+                <div class="size-7 rounded-full border-5 border-y-white border-l-white border-r-transparent animate-spin"></div>
+            } @else {
+                Aucun avatar
+            }
+        </div>
+    }
+
+    <label for="avatar">
+        <button app-button variant="primary" (click)="fileInput.click()">
+            <svg lucideUpload [size]="16"></svg>
+            {{ uploading() ? "Téléchargement en cours..." : "Télécharger une image" }}
+        </button>
+        <input
+            #fileInput
+            type="file"
+            id="avatar"
+            accept="image/*"
+            class="invisible absolute"
+            (change)="uploadAvatar($event)"
+            [disabled]="uploading()"
+        />
+    </label>
+</div>

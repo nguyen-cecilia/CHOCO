@@ -1,0 +1,17 @@
+@layer base {
+    form {
+        @apply flex flex-col gap-5;
+    }
+
+    label {
+        @apply block space-y-1;
+
+        > p {
+            @apply uppercase text-xs font-medium;
+        }
+    }
+
+    input {
+        @apply w-full border border-green rounded-sm px-5 py-2.5 focus:outline-none focus:border-purple focus:shadow-md focus:shadow-purple/15 disabled:opacity-60 disabled:pointer-events-none;
+    }
+}

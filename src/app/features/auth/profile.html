@@ -1,0 +1,76 @@
+<section class="space-y-6">
+    <div class="flex items-center justify-between gap-4">
+        <h1>Modifier mon profil</h1>
+
+        <button app-button type="button" (click)="signOut()" variant="secondary">
+            <svg lucideLogOut [size]="16"></svg>
+            Se déconnecter
+        </button>
+    </div>
+
+    @if (loading()) {
+        <p>Chargement...</p>
+    } @else {
+        <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+            @if (error()) {
+                <app-alert>{{ error() }}</app-alert>
+            }
+
+            @if (success()) {
+                <app-alert variant="success">{{ success() }}</app-alert>
+            }
+
+            <app-avatar [avatarUrl]="this.avatarUrl" (upload)="updateAvatar($event)"></app-avatar>
+
+            <label>
+                <p>Email</p>
+                <input
+                    type="email"
+                    formControlName="email"
+                    placeholder="Email"
+                />
+            </label>
+
+            <label>
+                <p>Nom d'affichage</p>
+                <input
+                    type="text"
+                    formControlName="displayName"
+                    placeholder="Votre nom"
+                />
+                @if (profileForm.get('displayName')?.invalid && profileForm.get('displayName')?.touched) {
+                    <span class="text-red text-sm">
+                        Le nom d'affichage est requis
+                    </span>
+                }
+            </label>
+
+            <div class="mt-4 border border-blue-light py-6 px-8 rounded space-y-6">
+                <h3>Modifier le mot de passe</h3>
+
+                <label>
+                    <p>Nouveau mot de passe</p>
+                    <input
+                        type="password"
+                        formControlName="newPassword"
+                        placeholder="Laisser vide pour ne pas changer"
+                    />
+                </label>
+
+                <label>
+                    <p>Confirmer le nouveau mot de passe</p>
+                    <input
+                        type="password"
+                        formControlName="newPasswordConfirm"
+                        placeholder="Ressaisissez le nouveau mot de passe"
+                    />
+                </label>
+            </div>
+
+            <button app-button type="submit" class="self-center">
+                <svg lucideSave [size]="16"/>
+                Sauvegarder
+            </button>
+        </form>
+    }
+</section>

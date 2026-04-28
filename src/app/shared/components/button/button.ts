@@ -1,16 +1,17 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
-    selector: 'app-button',
+    selector: 'button[app-button], a[app-button]',
     imports: [],
     templateUrl: './button.html',
     host: {
         '[class]': 'classes()',
-        '[attr.disabled]': 'disabled ? "" : null',
         '[attr.type]': 'type',
+        '[attr.disabled]': 'disabled ? "" : null',
     },
+    standalone: true,
 })
-export class Button {
+export class ButtonComponent {
     @Input() type: 'button' | 'submit' | 'reset' = 'button';
     @Input() disabled = false;
     @Input() variant: 'primary' | 'secondary' | 'menu' = 'primary';

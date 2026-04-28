@@ -1,0 +1,53 @@
+<section class="space-y-6">
+    <h1>Connexion</h1>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+        @if (error()) {
+            <app-alert>{{ error() }}</app-alert>
+        }
+
+        @if (success()) {
+            <app-alert variant="success">{{ success() }}</app-alert>
+        }
+
+        <label>
+            <p>Adresse email</p>
+            <input
+                type="email"
+                formControlName="email"
+                placeholder="mail@example.com"
+                [class.border-red]="emailError"
+            />
+            @if (emailError) {
+                <span class="text-red text-sm">
+                    Veuillez entrer une adresse email valide
+                </span>
+            }
+        </label>
+
+        <label>
+            <p>Mot de passe</p>
+            <input
+                type="password"
+                formControlName="password"
+                placeholder="Minimum 6 caractères"
+                [class.border-red]="passwordError"
+            />
+            @if (passwordError) {
+                <span class="text-red text-sm">
+                    Le mot de passe doit faire au minimum 6 caractères
+                </span>
+            }
+        </label>
+
+        <button
+            app-button
+            type="submit"
+            [disabled]="loading()"
+            variant="primary"
+            class="self-center"
+        >
+            Se connecter
+        </button>
+    </form>
+</section>
