@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, Output, signal} from '@angular/core';
 import {SafeResourceUrl, DomSanitizer} from '@angular/platform-browser';
 import {ProfileService} from '../../../core/auth/profile.service';
 import {ButtonComponent} from '../button/button';
-import {LucideUpload} from '@lucide/angular';
+import {LucideLoader, LucideUpload} from '@lucide/angular';
 
 @Component({
     selector: 'app-avatar',
@@ -10,7 +10,8 @@ import {LucideUpload} from '@lucide/angular';
 
     imports: [
         ButtonComponent,
-        LucideUpload
+        LucideUpload,
+        LucideLoader
     ]
 })
 export class AvatarComponent {
@@ -48,6 +49,8 @@ export class AvatarComponent {
         }
     }
 
+    @Input() oldAvatarUrl: string | null = null;
+
     async uploadAvatar(event: any) {
         try {
             this.uploading.set(true);
@@ -59,7 +62,7 @@ export class AvatarComponent {
             const fileExt = file.name.split('.').pop();
             const filePath = `${Math.random()}.${fileExt}`;
 
-            await this.profileService.uploadAvatar(filePath, file);
+            await this.profileService.uploadAvatar(filePath, file, this.oldAvatarUrl || undefined);
             this.upload.emit(filePath);
         } catch (error) {
             if (error instanceof Error) {

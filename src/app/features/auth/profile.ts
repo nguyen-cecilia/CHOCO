@@ -52,7 +52,6 @@ export class ProfileComponent implements OnInit {
     }
 
     async updateAvatar(event: string): Promise<void> {
-        console.log(event);
         this.profileForm.patchValue({
             avatarUrl: event,
         });
@@ -103,7 +102,7 @@ export class ProfileComponent implements OnInit {
                 await this.authService.updatePassword(newPassword);
             }
 
-            this.success.set('Profil mis à jour avec succès!');
+            this.success.set('Profil mis à jour avec succès !');
             this.profileForm.get('newPassword')?.reset();
             this.profileForm.get('newPasswordConfirm')?.reset();
         } catch (error) {

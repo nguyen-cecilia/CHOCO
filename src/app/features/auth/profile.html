@@ -20,30 +20,34 @@
                 <app-alert variant="success">{{ success() }}</app-alert>
             }
 
-            <app-avatar [avatarUrl]="this.avatarUrl" (upload)="updateAvatar($event)"></app-avatar>
+            <div class="flex items-start gap-8 *:first:w-1/3">
+                <app-avatar [avatarUrl]="this.avatarUrl" [oldAvatarUrl]="this.avatarUrl" (upload)="updateAvatar($event)"></app-avatar>
 
-            <label>
-                <p>Email</p>
-                <input
-                    type="email"
-                    formControlName="email"
-                    placeholder="Email"
-                />
-            </label>
+                <div class="flex-1 space-y-6">
+                    <label>
+                        <p>Email</p>
+                        <input
+                            type="email"
+                            formControlName="email"
+                            placeholder="Email"
+                        />
+                    </label>
 
-            <label>
-                <p>Nom d'affichage</p>
-                <input
-                    type="text"
-                    formControlName="displayName"
-                    placeholder="Votre nom"
-                />
-                @if (profileForm.get('displayName')?.invalid && profileForm.get('displayName')?.touched) {
-                    <span class="text-red text-sm">
+                    <label>
+                        <p>Nom d'affichage</p>
+                        <input
+                            type="text"
+                            formControlName="displayName"
+                            placeholder="Votre nom"
+                        />
+                        @if (profileForm.get('displayName')?.invalid && profileForm.get('displayName')?.touched) {
+                            <span class="text-red text-sm">
                         Le nom d'affichage est requis
                     </span>
-                }
-            </label>
+                        }
+                    </label>
+                </div>
+            </div>
 
             <div class="mt-4 border border-blue-light py-6 px-8 rounded space-y-6">
                 <h3>Modifier le mot de passe</h3>

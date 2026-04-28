@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-4 flex flex-col items-center">
     @if (_avatarUrl() && !loading()) {
         <img
             [src]="_avatarUrl()"
@@ -19,8 +19,13 @@
 
     <label for="avatar">
         <button app-button variant="primary" (click)="fileInput.click()">
-            <svg lucideUpload [size]="16"></svg>
-            {{ uploading() ? "Téléchargement en cours..." : "Télécharger une image" }}
+            @if (uploading()) {
+                <svg lucideLoader [size]="16" class="animate-spin"></svg>
+                En cours...
+            } @else {
+                <svg lucideUpload [size]="16"></svg>
+                Changer l'avatar
+            }
         </button>
         <input
             #fileInput

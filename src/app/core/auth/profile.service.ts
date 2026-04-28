@@ -42,7 +42,17 @@ export class ProfileService {
         }
     }
 
-    async uploadAvatar(filePath: string, file: File) {
+    async uploadAvatar(filePath: string, file: File, oldAvatarPath?: string) {
+        if (oldAvatarPath) {
+            const {error: deleteError} = await supabase.storage
+                .from('avatars')
+                .remove([oldAvatarPath]);
+
+            if (deleteError) {
+                console.error('Erreur lors de la suppression de l\'ancienne image:', deleteError);
+            }
+        }
+
         const {error} = await supabase.storage
             .from('avatars')
             .upload(filePath, file, {upsert: true});
