@@ -2,13 +2,14 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'app-alert',
-    imports: [],
-    templateUrl: './alert.html',
+    template: `
+        <ng-content/>
+    `,
     host: {
         '[class]': 'classes()',
     }
 })
-export class Alert {
+export class AlertComponent {
     @Input() variant: 'error' | 'success' = 'error';
 
     classes(): string {

@@ -10,7 +10,8 @@
     @if (!_avatarUrl() || loading()) {
         <div class="bg-brown text-white flex justify-center items-center size-36 rounded-sm">
             @if (loading()) {
-                <div class="size-7 rounded-full border-5 border-y-white border-l-white border-r-transparent animate-spin"></div>
+                <div
+                    class="size-7 rounded-full border-5 border-y-white border-l-white border-r-transparent animate-spin"></div>
             } @else {
                 Aucun avatar
             }

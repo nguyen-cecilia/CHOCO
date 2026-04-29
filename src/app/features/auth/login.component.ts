@@ -2,15 +2,15 @@ import {Component, signal} from '@angular/core';
 import {Router} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import {AuthService} from '../../core/auth/auth.service';
-import {ButtonComponent} from '../../shared/components/button/button';
-import {Alert} from '../../shared/components/alert/alert';
+import {AuthService} from './auth.service';
+import {ButtonComponent} from '../../components/button/button.component';
+import {AlertComponent} from '../../components/alert/alert.component';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, ButtonComponent, Alert],
-    templateUrl: './login.html',
+    imports: [CommonModule, ReactiveFormsModule, ButtonComponent, AlertComponent],
+    templateUrl: './login.component.html',
 })
 export class LoginComponent {
     loginForm: FormGroup;

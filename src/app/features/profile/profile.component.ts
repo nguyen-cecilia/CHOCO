@@ -1,21 +1,21 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, ReactiveFormsModule} from '@angular/forms';
-import {ButtonComponent} from '../../shared/components/button/button';
-import {AuthService} from '../../core/auth/auth.service';
-import {AuthStateService} from '../../core/auth/auth-state.service';
-import {ProfileService} from '../../core/auth/profile.service';
+import {ButtonComponent} from '../../components/button/button.component';
+import {AuthService} from '../auth/auth.service';
+import {AuthStateService} from '../auth/auth-state.service';
+import {ProfileService} from './profile.service';
 import {CommonModule} from '@angular/common';
 import {User} from '@supabase/supabase-js';
 import {LucideLogOut, LucideSave} from '@lucide/angular';
-import {Alert} from '../../shared/components/alert/alert';
+import {AlertComponent} from '../../components/alert/alert.component';
 import {Router} from '@angular/router';
-import {AvatarComponent} from '../../shared/components/avatar/avatar';
+import {AvatarComponent} from '../../components/avatar/avatar.component';
 
 @Component({
     selector: 'app-profile',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, ButtonComponent, LucideLogOut, LucideSave, Alert, AvatarComponent],
-    templateUrl: './profile.html',
+    imports: [CommonModule, ReactiveFormsModule, ButtonComponent, LucideLogOut, LucideSave, AlertComponent, AvatarComponent],
+    templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {
     profileForm!: FormGroup;
@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit {
         this.profileForm = this.fb.group({
             email: [{value: '', disabled: true}],
             displayName: ['', [Validators.required, Validators.minLength(3)]],
-            avatarUrl: '',
+            avatarUrl: [''],
             newPassword: [''],
             newPasswordConfirm: [''],
         });

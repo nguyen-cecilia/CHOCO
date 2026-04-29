@@ -2,14 +2,14 @@ import {Component, Input} from '@angular/core';
 
 @Component({
     selector: 'button[app-button], a[app-button]',
-    imports: [],
-    templateUrl: './button.html',
+    template: `
+        <ng-content/>
+    `,
     host: {
         '[class]': 'classes()',
         '[attr.type]': 'type',
         '[attr.disabled]': 'disabled ? "" : null',
     },
-    standalone: true,
 })
 export class ButtonComponent {
     @Input() type: 'button' | 'submit' | 'reset' = 'button';

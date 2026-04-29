@@ -15,15 +15,22 @@
         @for (item of navItems; track item.label) {
             <button
                 app-button
-                [routerLink]="item.route"
                 variant="menu"
+                [routerLink]="item.route"
                 routerLinkActive="bg-brown text-white"
                 [routerLinkActiveOptions]="{ exact: item.route === '' }"
             >
                 {{ item.label }}
             </button>
         }
-        <button app-button variant="secondary" shape="round">
+        <button
+            app-button
+            variant="secondary"
+            shape="round"
+            routerLink="/ajouter-degustation"
+            routerLinkActive="bg-brown!"
+            [routerLinkActiveOptions]="{ exact: true }"
+        >
             <svg lucidePlus [size]="20"></svg>
         </button>
     </nav>

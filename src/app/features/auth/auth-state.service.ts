@@ -1,6 +1,6 @@
 import {Injectable, signal} from '@angular/core';
 import {User} from '@supabase/supabase-js';
-import {supabase} from '../supabase/client';
+import {supabase} from '../../core/supabase/client';
 
 @Injectable({
     providedIn: 'root',

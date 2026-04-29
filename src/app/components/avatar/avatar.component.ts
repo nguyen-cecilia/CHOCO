@@ -1,13 +1,12 @@
 import {Component, EventEmitter, Input, Output, signal} from '@angular/core';
 import {SafeResourceUrl, DomSanitizer} from '@angular/platform-browser';
-import {ProfileService} from '../../../core/auth/profile.service';
-import {ButtonComponent} from '../button/button';
+import {ProfileService} from '../../features/profile/profile.service';
+import {ButtonComponent} from '../button/button.component';
 import {LucideLoader, LucideUpload} from '@lucide/angular';
 
 @Component({
     selector: 'app-avatar',
-    templateUrl: './avatar.html',
-
+    templateUrl: './avatar.component.html',
     imports: [
         ButtonComponent,
         LucideUpload,

@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-import {ButtonComponent} from './shared/components/button/button';
+import {ButtonComponent} from './components/button/button.component';
 import {LucidePlus} from '@lucide/angular';
-import {AuthStateService} from './core/auth/auth-state.service';
+import {AuthStateService} from './features/auth/auth-state.service';
 import {CommonModule} from '@angular/common';
 
 @Component({
