@@ -3,7 +3,7 @@ import {TastingsListingComponent} from './features/tasting/tastings-listing.comp
 import {LoginComponent} from './features/auth/login.component';
 import {authGuard} from './features/auth/auth.guard';
 import {ProfileComponent} from './features/profile/profile.component';
-import {TastingsAddComponent} from './features/tasting/tastings-add.component';
+// import {TastingAddComponent} from './features/tasting/tasting-add.component';
 
 export const routes: Routes = [
     {
