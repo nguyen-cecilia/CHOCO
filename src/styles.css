@@ -4,6 +4,10 @@
 @import "./assets/styles/base.css";
 @import "./assets/styles/form.css";
 
+@plugin "@tailwindcss/forms" {
+    strategy: "class";
+}
+
 @theme {
     /* COLORS */
     --color-brown: #3F2621;

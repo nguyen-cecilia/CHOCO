@@ -12,9 +12,12 @@ export interface Profile {
     providedIn: 'root',
 })
 export class ProfileService {
+    private PROFILE_TABLE_NAME = 'profile';
+    private AVATAR_TABLE_NAME = 'avatars';
+
     async getProfile(userId: string): Promise<Profile | null> {
         const {data, error} = await supabase
-            .from('profiles')
+            .from(this.PROFILE_TABLE_NAME)
             .select('*')
             .eq('id', userId)
             .single();
@@ -29,7 +32,7 @@ export class ProfileService {
 
     async updateProfile(profile: Profile): Promise<void> {
         const {error} = await supabase
-            .from('profiles')
+            .from(this.PROFILE_TABLE_NAME)
             .upsert({
                 id: profile.id,
                 display_name: profile.display_name,
@@ -45,7 +48,7 @@ export class ProfileService {
     async uploadAvatar(filePath: string, file: File, oldAvatarPath?: string) {
         if (oldAvatarPath) {
             const {error: deleteError} = await supabase.storage
-                .from('avatars')
+                .from(this.AVATAR_TABLE_NAME)
                 .remove([oldAvatarPath]);
 
             if (deleteError) {
@@ -54,7 +57,7 @@ export class ProfileService {
         }
 
         const {error} = await supabase.storage
-            .from('avatars')
+            .from(this.AVATAR_TABLE_NAME)
             .upload(filePath, file, {upsert: true});
 
         if (error) {
@@ -65,12 +68,12 @@ export class ProfileService {
     }
 
     downLoadImage(path: string) {
-        return supabase.storage.from('avatars').download(path);
+        return supabase.storage.from(this.AVATAR_TABLE_NAME).download(path);
     }
 
     getAvatarUrl(filePath: string): string {
         const {data} = supabase.storage
-            .from('avatars')
+            .from(this.AVATAR_TABLE_NAME)
             .getPublicUrl(filePath);
 
         return data.publicUrl;

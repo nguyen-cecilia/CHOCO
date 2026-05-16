@@ -3,6 +3,14 @@
         @apply flex flex-col gap-5;
     }
 
+    fieldset {
+        @apply space-y-2;
+    }
+
+    legend {
+        @apply uppercase text-xs font-medium;
+    }
+
     label {
         @apply block space-y-1;
 
@@ -11,7 +19,23 @@
         }
     }
 
-    input {
+    input[type='radio'] {
+        @apply form-radio size-5 border-2 border-brown bg-transparent text-pink cursor-pointer shadow-pink focus:ring-offset-0 focus:ring-0 focus:ring-transparent focus:shadow-md checked:shadow-md;
+
+        ~ p {
+            @apply text-base cursor-pointer;
+        }
+    }
+
+    input[type='text'],
+    input[type='number'],
+    input[type='email'],
+    input[type='password'],
+    textarea {
         @apply w-full border border-green rounded-sm px-5 py-2.5 focus:outline-none focus:border-purple focus:shadow-md focus:shadow-purple/15 disabled:opacity-60 disabled:pointer-events-none;
+    }
+
+    select {
+        @apply form-select w-full bg-transparent border border-green rounded-sm px-5 py-2.5 focus:ring-0 focus:ring-transparent focus:outline-none focus:border-purple focus:shadow-md focus:shadow-purple/15;
     }
 }
