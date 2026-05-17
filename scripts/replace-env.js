@@ -11,7 +11,7 @@ const path = require('path');
 
 const envFilePath = path.resolve(
     __dirname,
-    '../src/environments/environment.prod.ts'
+    '../src/environments/environment.ts'
 );
 
 const requiredVars = ['SUPABASE_URL', 'SUPABASE_KEY'];
