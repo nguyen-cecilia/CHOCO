@@ -4,6 +4,7 @@ import {ButtonComponent} from './components/button/button.component';
 import {LucidePlus} from '@lucide/angular';
 import {AuthStateService} from './features/auth/auth-state.service';
 import {CommonModule} from '@angular/common';
+import {AppUpdateService} from './core/app-update.service';
 
 @Component({
     selector: 'app-root',
@@ -18,6 +19,8 @@ export class App {
         {label: 'Profil', route: '/profil'},
     ];
 
-    constructor(protected readonly authState: AuthStateService) {
-    }
+    constructor(
+        protected readonly authState: AuthStateService,
+        private appUpdate: AppUpdateService
+    ) {}
 }
