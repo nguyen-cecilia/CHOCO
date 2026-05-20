@@ -1,0 +1,190 @@
+<section class="space-y-6">
+    <h1>Noter une dégustation</h1>
+
+    <form [formGroup]="tastingAddForm" (ngSubmit)="updateTasting()">
+        @if (error()) {
+            <app-alert>{{ error() }}</app-alert>
+        }
+
+        @if (success()) {
+            <app-alert variant="success">{{ success() }}</app-alert>
+        }
+
+        <label for="cafeName">
+            <p>Nom du café<span class="text-pink text-md">⁎</span></p>
+            <input
+                id="cafeName"
+                type="text"
+                formControlName="cafeName"
+                placeholder="Saisissez le nom du café"
+                [class.border-red]="formError('cafeName')"
+            >
+            @if (formError('cafeName')) {
+                <p class="text-red text-sm normal-case">
+                    Ce champ est requis.
+                </p>
+            }
+        </label>
+
+        <label for="cafeLocation">
+            <p>Localisation du café</p>
+            <input
+                id="cafeLocation"
+                type="text"
+                formControlName="cafeLocation"
+                placeholder="Saisissez la localisation du café"
+            >
+        </label>
+
+        <div class="flex flex-wrap items-end gap-x-6 gap-y-1">
+            <label for="price" class="w-3/5">
+                <p>Prix</p>
+                <input
+                    id="price"
+                    type="number"
+                    formControlName="price"
+                    placeholder="Saisissez le prix"
+                >
+            </label>
+
+            <label for="priceCurrency" class="flex-1">
+                <select id="priceCurrency" formControlName="priceCurrency"
+                        [class.border-red]="formError('priceCurrency')">
+                    <option value="" selected>--Devise--</option>
+                    <option value="WON">Wons</option>
+                    <option value="EUR">Euros</option>
+                </select>
+            </label>
+
+            @if (priceCurrency?.hasError('dependantFieldRequired')) {
+                <p class="w-full text-red text-sm font-medium normal-case">
+                    La devise doit aussi être saisie.
+                </p>
+            }
+        </div>
+
+        <fieldset>
+            <legend>Note<span class="text-pink text-md">⁎</span></legend>
+
+            <div class="flex items-center justify-between">
+                @for (note of noteOptions; track note.value) {
+                    <label for="note{{ note.label }}" class="flex flex-col items-center gap-1">
+                        <input
+                            id="note{{ note.label }}"
+                            name="note"
+                            type="radio"
+                            formControlName="note"
+                            [value]="note.value"
+                        >
+                        <p>{{ note.label }}</p>
+                    </label>
+                }
+            </div>
+
+            @if (formError('note')) {
+                <p class="text-red text-sm normal-case">
+                    Ce champ est requis.
+                </p>
+            }
+        </fieldset>
+
+        <div class="py-4 px-6 rounded border border-blue-light space-y-3">
+            <h2>Goût du chocolat</h2>
+
+            <fieldset>
+                <legend>Intensité</legend>
+
+                <div class="grid grid-cols-3 gap-3">
+                    @for (intensity of chocoIntensityOptions; track intensity.value) {
+                        <label for="intensity{{ intensity.label }}" class="flex items-center gap-3">
+                            <input
+                                id="intensity{{ intensity.label }}"
+                                name="chocoIntensity"
+                                type="radio"
+                                formControlName="chocoIntensity"
+                                [value]="intensity.value"
+                            >
+                            <p class="normal-case">{{ intensity.label }}</p>
+                        </label>
+                    }
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Qualité</legend>
+
+                <div class="grid grid-cols-3 gap-3">
+                    @for (quality of chocoQualityOptions; track quality.value) {
+                        <label for="quality{{ quality.label }}" class="flex items-center gap-3">
+                            <input
+                                id="quality{{ quality.label }}"
+                                name="chocoQuality"
+                                type="radio"
+                                formControlName="chocoQuality"
+                                [value]="quality.value"
+                            >
+                            <p class="normal-case">{{ quality.label }}</p>
+                        </label>
+                    }
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Équilibre</legend>
+
+                <div class="flex items-start justify-between">
+                    <p class="font-medium">Sucré</p>
+                    @for (balance of chocoBalanceOptions; track balance.value) {
+                        <label for="balance{{ balance.label }}" class="flex flex-col items-center gap-1">
+                            <input
+                                id="balance{{ balance.label }}"
+                                name="chocoBalance"
+                                type="radio"
+                                formControlName="chocoBalance"
+                                [value]="balance.value"
+                            >
+                            <p>{{ balance.label }}</p>
+                        </label>
+                    }
+                    <p class="font-medium">Amer</p>
+                </div>
+            </fieldset>
+        </div>
+
+        <label for="comment">
+            <p>Commentaire</p>
+            <textarea
+                id="comment"
+                formControlName="comment"
+                placeholder="Accompagnement, ustensils, texture, parfum, mousse..."
+                rows="3"
+            >
+            </textarea>
+        </label>
+
+        <label for="pictureUrl">
+            <p>Photo</p>
+            <button app-button variant="primary">
+                <!--                @if (uploading()) {-->
+                <!--                    <svg lucideLoader [size]="16" class="animate-spin"></svg>-->
+                <!--                    En cours...-->
+                <!--                } @else {-->
+                <svg lucideUpload [size]="16"></svg>
+                Ajouter une photo
+                <!--                }-->
+            </button>
+            <input
+                #fileInput
+                type="file"
+                id="pictureUrl"
+                accept="image/*"
+                class="invisible absolute"
+            />
+        </label>
+
+        <button app-button type="submit" variant="tertiary" class="self-center">
+            <svg lucideSave [size]="16"/>
+            Sauvegarder
+        </button>
+    </form>
+</section>

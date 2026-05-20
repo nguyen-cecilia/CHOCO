@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {ButtonComponent} from './components/button/button.component';
 import {LucidePlus} from '@lucide/angular';
@@ -18,9 +18,16 @@ export class App {
         {label: 'Dégustations', route: ''},
         {label: 'Profil', route: '/profil'},
     ];
+    isScrolled = false;
 
     constructor(
         protected readonly authState: AuthStateService,
         private appUpdate: AppUpdateService
-    ) {}
+    ) {
+    }
+
+    @HostListener('window:scroll', [])
+    onScroll() {
+        this.isScrolled = window.scrollY > 30;
+    }
 }

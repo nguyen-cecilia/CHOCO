@@ -4,7 +4,7 @@
     }
 
     h1 {
-        @apply font-display text-xl tracking-tighter;
+        @apply font-display text-xl tracking-tighter leading-8;
     }
 
     h2 {

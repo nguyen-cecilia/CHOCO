@@ -2,9 +2,8 @@
     <div class="flex items-center justify-between gap-4">
         <h1>Modifier mon profil</h1>
 
-        <button app-button type="button" (click)="signOut()" variant="secondary">
-            <svg lucideLogOut [size]="16"></svg>
-            Se déconnecter
+        <button app-button type="button" (click)="signOut()" variant="secondary" shape="round">
+            <svg lucideLogOut [size]="24"></svg>
         </button>
     </div>
 
@@ -20,7 +19,7 @@
                 <app-alert variant="success">{{ success() }}</app-alert>
             }
 
-            <div class="flex items-start gap-8 *:first:w-1/3">
+            <div class="flex items-start gap-6 *:first:w-1/3">
                 <app-avatar [avatarUrl]="this.avatarUrl" [oldAvatarUrl]="this.avatarUrl"
                             (upload)="updateAvatar($event)"></app-avatar>
 
@@ -50,8 +49,8 @@
                 </div>
             </div>
 
-            <div class="mt-4 border border-blue-light py-6 px-8 rounded space-y-6">
-                <h3>Modifier le mot de passe</h3>
+            <div class="mt-4 border border-blue-light p-6 rounded space-y-6">
+                <h2>Modifier le mot de passe</h2>
 
                 <label>
                     <p>Nouveau mot de passe</p>
@@ -72,7 +71,7 @@
                 </label>
             </div>
 
-            <button app-button type="submit" class="self-center">
+            <button app-button type="submit" variant="tertiary" class="self-center">
                 <svg lucideSave [size]="16"/>
                 Sauvegarder
             </button>

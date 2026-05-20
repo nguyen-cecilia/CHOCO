@@ -3,7 +3,7 @@
         <img
             [src]="_avatarUrl()"
             alt="Avatar"
-            class="size-36 object-cover rounded-sm"
+            class="max-size-36 aspect-square object-cover rounded-sm"
         />
     }
 
@@ -21,10 +21,10 @@
     <label for="avatar">
         <button app-button variant="primary" (click)="fileInput.click()">
             @if (uploading()) {
-                <svg lucideLoader [size]="16" class="animate-spin"></svg>
+                <svg lucideLoader [size]="24" class="animate-spin"></svg>
                 En cours...
             } @else {
-                <svg lucideUpload [size]="16"></svg>
+                <svg lucideUpload [size]="24"></svg>
                 Changer l'avatar
             }
         </button>

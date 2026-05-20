@@ -1,7 +1,9 @@
-<header class="sticky top-0 flex justify-center py-4 bg-beige-light/50 backdrop-blur-xs">
+<header
+    class="sticky top-0 z-10 flex justify-center py-4 transition-all {{ isScrolled ? 'backdrop-blur-xs bg-beige-light/75' : '' }}">
     <a href="/" class="flex items-center gap-2">
         <h1>Super</h1>
-        <img src="images/logo.svg" alt="Logo Super Choco">
+        <img src="images/logo.svg" alt="Logo Super Choco"
+             class="transition-height {{ isScrolled ? 'h-12' : 'h-full' }}">
         <h1>Choco</h1>
     </a>
 </header>
