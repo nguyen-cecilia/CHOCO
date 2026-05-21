@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, OnInit, signal, inject} from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
@@ -26,6 +26,11 @@ import {dependantFieldValidator} from '../../core/validators/dependant-field.dir
     templateUrl: './tasting-add.component.html',
 })
 export class TastingAddComponent implements OnInit {
+    private authStateService = inject(AuthStateService);
+    private tastingService = inject(TastingService);
+    private fb = inject(FormBuilder);
+    private viewportScroller = inject(ViewportScroller);
+
     tastingAddForm: FormGroup;
     loading = signal(false);
     error = signal<string | null>(null);
@@ -66,12 +71,7 @@ export class TastingAddComponent implements OnInit {
         {value: 5, label: '5'},
     ];
 
-    constructor(
-        private authStateService: AuthStateService,
-        private tastingService: TastingService,
-        private fb: FormBuilder,
-        private viewportScroller: ViewportScroller,
-    ) {
+    constructor() {
         this.tastingAddForm = this.fb.group({
             cafeName: ['', [Validators.required, Validators.minLength(2)]],
             cafeLocation: [''],

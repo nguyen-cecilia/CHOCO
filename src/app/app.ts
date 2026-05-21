@@ -1,4 +1,4 @@
-import {Component, HostListener} from '@angular/core';
+import {Component, HostListener, inject} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {ButtonComponent} from './components/button/button.component';
 import {LucidePlus} from '@lucide/angular';
@@ -13,18 +13,15 @@ import {AppUpdateService} from './core/app-update.service';
     templateUrl: './app.html',
 })
 export class App {
+    protected readonly authState = inject(AuthStateService);
+    private appUpdate = inject(AppUpdateService);
+
     protected readonly title = 'choco';
     protected navItems = [
         {label: 'Dégustations', route: ''},
         {label: 'Profil', route: '/profil'},
     ];
     isScrolled = false;
-
-    constructor(
-        protected readonly authState: AuthStateService,
-        private appUpdate: AppUpdateService
-    ) {
-    }
 
     @HostListener('window:scroll', [])
     onScroll() {

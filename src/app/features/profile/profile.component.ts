@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, OnInit, signal, inject} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, ReactiveFormsModule} from '@angular/forms';
 import {ButtonComponent} from '../../components/button/button.component';
 import {AuthService} from '../auth/auth.service';
@@ -18,19 +18,19 @@ import {AvatarComponent} from '../../components/avatar/avatar.component';
     templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {
+    private authService = inject(AuthService);
+    private authStateService = inject(AuthStateService);
+    private profileService = inject(ProfileService);
+    private fb = inject(FormBuilder);
+    private router = inject(Router);
+
     profileForm!: FormGroup;
     loading = signal(false);
     error = signal<string | null>(null);
     success = signal<string | null>(null);
     user: User | null = null;
 
-    constructor(
-        private authService: AuthService,
-        private authStateService: AuthStateService,
-        private profileService: ProfileService,
-        private fb: FormBuilder,
-        private router: Router,
-    ) {
+    constructor() {
         this.profileForm = this.fb.group({
             email: [{value: '', disabled: true}],
             displayName: ['', [Validators.required, Validators.minLength(3)]],

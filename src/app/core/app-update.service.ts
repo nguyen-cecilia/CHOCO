@@ -1,9 +1,13 @@
 import {SwUpdate} from '@angular/service-worker';
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 
 @Injectable({providedIn: 'root'})
 export class AppUpdateService {
-    constructor(private swUpdate: SwUpdate) {
+    private swUpdate = inject(SwUpdate);
+
+    constructor() {
+        const swUpdate = this.swUpdate;
+
         if (!swUpdate.isEnabled) return;
 
         swUpdate.versionUpdates.subscribe(event => {

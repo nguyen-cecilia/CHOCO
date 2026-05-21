@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, signal, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
@@ -13,16 +13,16 @@ import {AlertComponent} from '../../components/alert/alert.component';
     templateUrl: './login.component.html',
 })
 export class LoginComponent {
+    private authService = inject(AuthService);
+    private router = inject(Router);
+    private fb = inject(FormBuilder);
+
     loginForm: FormGroup;
     loading = signal(false);
     error = signal<string | null>(null);
     success = signal<string | null>(null);
 
-    constructor(
-        private authService: AuthService,
-        private router: Router,
-        private fb: FormBuilder,
-    ) {
+    constructor() {
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(6)]],

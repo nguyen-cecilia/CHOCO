@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, signal} from '@angular/core';
+import {Component, EventEmitter, Input, Output, signal, inject} from '@angular/core';
 import {SafeResourceUrl, DomSanitizer} from '@angular/platform-browser';
 import {ProfileService} from '../../features/profile/profile.service';
 import {ButtonComponent} from '../button/button.component';
@@ -15,6 +15,10 @@ import {AuthStateService} from '../../features/auth/auth-state.service';
     ]
 })
 export class AvatarComponent {
+    private profileService = inject(ProfileService);
+    private readonly dom = inject(DomSanitizer);
+    private authStateService = inject(AuthStateService);
+
     _avatarUrl = signal<SafeResourceUrl | undefined>(undefined);
     uploading = signal(false);
     loading = signal(false);
@@ -28,13 +32,6 @@ export class AvatarComponent {
 
     @Input() oldAvatarUrl: string | null = null;
     @Output() upload = new EventEmitter<string>();
-
-    constructor(
-        private profileService: ProfileService,
-        private readonly dom: DomSanitizer,
-        private authStateService: AuthStateService,
-    ) {
-    }
 
     async downloadImage(path: string) {
         const user = this.authStateService.getCurrentUser();
@@ -56,7 +53,7 @@ export class AvatarComponent {
         }
     }
 
-    async uploadAvatar(event: any) {
+    async uploadAvatar(event: Event) {
         const user = this.authStateService.getCurrentUser();
         if (!user?.id) {
             throw new Error('User not authenticated.');
@@ -64,11 +61,12 @@ export class AvatarComponent {
 
         try {
             this.uploading.set(true);
-            if (!event.target.files || event.target.files.length === 0) {
+            const input = event.target as HTMLInputElement;
+            if (!input.files || input.files.length === 0) {
                 throw new Error('You must select an image to upload.');
             }
 
-            const file = event.target.files[0];
+            const file = input.files[0];
             const fileExt = file.name.split('.').pop();
             const filePath = `${Math.random()}.${fileExt}`;
 
