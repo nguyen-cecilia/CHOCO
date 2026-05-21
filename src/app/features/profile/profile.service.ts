@@ -45,30 +45,32 @@ export class ProfileService {
         }
     }
 
-    async uploadAvatar(filePath: string, file: File, oldAvatarPath?: string) {
+    async uploadAvatar(filePath: string, file: File, userId: string, oldAvatarPath?: string) {
         if (oldAvatarPath) {
             const {error: deleteError} = await supabase.storage
                 .from(this.AVATAR_TABLE_NAME)
-                .remove([oldAvatarPath]);
+                .remove([`${userId}/${oldAvatarPath}`]);
 
             if (deleteError) {
                 console.error('Erreur lors de la suppression de l\'ancienne image:', deleteError);
             }
         }
 
+        const avatarFilePath = `${userId}/${filePath}`;
+
         const {error} = await supabase.storage
             .from(this.AVATAR_TABLE_NAME)
-            .upload(filePath, file, {upsert: true});
+            .upload(avatarFilePath, file, {upsert: true});
 
         if (error) {
             throw error;
         }
 
-        return filePath;
+        return avatarFilePath;
     }
 
-    downLoadImage(path: string) {
-        return supabase.storage.from(this.AVATAR_TABLE_NAME).download(path);
+    downLoadImage(path: string, userId: string) {
+        return supabase.storage.from(this.AVATAR_TABLE_NAME).download(`${userId}/${path}`);
     }
 
     getAvatarUrl(filePath: string): string {

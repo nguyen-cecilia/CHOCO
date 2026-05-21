@@ -3,6 +3,7 @@ import {SafeResourceUrl, DomSanitizer} from '@angular/platform-browser';
 import {ProfileService} from '../../features/profile/profile.service';
 import {ButtonComponent} from '../button/button.component';
 import {LucideLoader, LucideUpload} from '@lucide/angular';
+import {AuthStateService} from '../../features/auth/auth-state.service';
 
 @Component({
     selector: 'app-avatar',
@@ -25,18 +26,25 @@ export class AvatarComponent {
         }
     }
 
+    @Input() oldAvatarUrl: string | null = null;
     @Output() upload = new EventEmitter<string>();
 
     constructor(
         private profileService: ProfileService,
-        private readonly dom: DomSanitizer
+        private readonly dom: DomSanitizer,
+        private authStateService: AuthStateService,
     ) {
     }
 
     async downloadImage(path: string) {
+        const user = this.authStateService.getCurrentUser();
+        if (!user?.id) {
+            throw new Error('User not authenticated.');
+        }
+
         try {
             this.loading.set(true);
-            const {data} = await this.profileService.downLoadImage(path);
+            const {data} = await this.profileService.downLoadImage(path, user.id);
             if (data instanceof Blob) {
                 this._avatarUrl.set(this.dom.bypassSecurityTrustResourceUrl(URL.createObjectURL(data)));
             }
@@ -48,9 +56,12 @@ export class AvatarComponent {
         }
     }
 
-    @Input() oldAvatarUrl: string | null = null;
-
     async uploadAvatar(event: any) {
+        const user = this.authStateService.getCurrentUser();
+        if (!user?.id) {
+            throw new Error('User not authenticated.');
+        }
+
         try {
             this.uploading.set(true);
             if (!event.target.files || event.target.files.length === 0) {
@@ -61,7 +72,7 @@ export class AvatarComponent {
             const fileExt = file.name.split('.').pop();
             const filePath = `${Math.random()}.${fileExt}`;
 
-            await this.profileService.uploadAvatar(filePath, file, this.oldAvatarUrl || undefined);
+            await this.profileService.uploadAvatar(filePath, file, user.id, this.oldAvatarUrl || undefined);
             this.upload.emit(filePath);
         } catch (error) {
             if (error instanceof Error) {

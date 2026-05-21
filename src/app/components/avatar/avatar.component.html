@@ -21,11 +21,11 @@
     <label for="avatar">
         <button app-button variant="primary" (click)="fileInput.click()">
             @if (uploading()) {
-                <svg lucideLoader [size]="24" class="animate-spin"></svg>
-                En cours...
+                <svg lucideLoader [size]="16" class="animate-spin"></svg>
+                Envoi...
             } @else {
-                <svg lucideUpload [size]="24"></svg>
-                Changer l'avatar
+                <svg lucideUpload [size]="16"></svg>
+                Modifier
             }
         </button>
         <input
