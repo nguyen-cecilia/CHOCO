@@ -1,26 +1,7 @@
 import {Injectable} from '@angular/core';
 import {supabase} from '../../core/supabase/client';
+import {Tasting, TastingInput} from './tasting.model';
 
-interface Tasting {
-    id: string;
-    cafe_name: string;
-    cafe_location?: string;
-    price: number | null;
-    price_currency?: string;
-    note: number;
-    choco_intensity: number | null;
-    choco_quality: number | null;
-    choco_balance: number | null;
-    comment?: string;
-    picture_url: string | null; // TODO: Enlever le null
-    user_id: string;
-    created_at?: string;
-    updated_at?: string;
-}
-
-type TastingInput = Omit<Tasting, 'id' | 'created_at' | 'updated_at'> & {
-    id?: string;
-};
 
 @Injectable({
     providedIn: 'root',
@@ -28,6 +9,20 @@ type TastingInput = Omit<Tasting, 'id' | 'created_at' | 'updated_at'> & {
 export class TastingService {
     private TASTING_TABLE_NAME = 'tasting';
     private TASTING_PICTURES_BUCKET_NAME = 'tasting-pictures';
+
+    async getTastings(userId: string): Promise<Tasting[] | null> {
+        const {data, error} = await supabase
+            .from(this.TASTING_TABLE_NAME)
+            .select('*')
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error('Erreur lors du chargement des dégustations:', error);
+            return null;
+        }
+
+        return data;
+    }
 
     async upsertTasting(tasting: TastingInput): Promise<void> {
         const {error} = await supabase
@@ -63,13 +58,11 @@ export class TastingService {
             throw error;
         }
 
-        return picturePath;
+        return filePath;
     }
 
     downloadTastingPicture(path: string, userId: string) {
-        return supabase.storage
-            .from(this.TASTING_PICTURES_BUCKET_NAME)
-            .download(`${userId}/${path}`);
+        return supabase.storage.from(this.TASTING_PICTURES_BUCKET_NAME).download(`${userId}/${path}`);
     }
 
     getTastingPictureUrl(filePath: string): string {

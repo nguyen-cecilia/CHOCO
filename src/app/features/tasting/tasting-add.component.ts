@@ -63,8 +63,7 @@ export class TastingAddComponent implements OnInit {
 
     chocoQualityOptions = [
         {value: 1, label: 'Artisanal'},
-        {value: 2, label: 'Entre les deux'},
-        {value: 3, label: 'Industriel'},
+        {value: 2, label: 'Industriel'},
     ];
 
     chocoBalanceOptions = [

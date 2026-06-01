@@ -1,1 +1,46 @@
-listing
+<section class="space-y-6">
+    <h1>Dégustations</h1>
+
+    @if (error()) {
+        <app-alert>{{ error() }}</app-alert>
+    }
+
+    @if (loading()) {
+        <p>Chargement...</p>
+    } @else if (tastings().length === 0) {
+        <p>Aucune dégustation enregistrée.</p>
+    } @else {
+        <div class="flex flex-col gap-5">
+            @for (tasting of tastings(); track tasting.id) {
+                <article class="grid grid-cols-3 gap-3">
+                    @if (getPictureUrl(tasting.id); as imageUrl) {
+                        <img
+                            [src]="imageUrl"
+                            [alt]="tasting.cafe_name"
+                            [class]="'aspect-square object-cover rounded border-6 ' + getColorsByNote(tasting.note).border"
+                        />
+                    } @else {
+                        <div class="aspect-square px-3 bg-brown text-white flex items-center justify-center text-center rounded">
+                            Pas d'image
+                        </div>
+                    }
+
+                    <div
+                        [class]="'col-span-2 rounded px-3 flex items-center justify-between gap-6 ' + getColorsByNote(tasting.note).bg"
+                    >
+                        <div class="flex flex-col justify-center gap-1">
+                            <h2>{{ tasting.cafe_name }}</h2>
+                            @if (tasting.cafe_location) {
+                                <p>{{ tasting.cafe_location }}</p>
+                            }
+                        </div>
+
+                        <div>
+                            <span class="text-white font-display text-2xl tracking-tighter">{{ tasting.note }}</span>/10
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
