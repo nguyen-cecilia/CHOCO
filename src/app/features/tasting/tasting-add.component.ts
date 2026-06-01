@@ -1,4 +1,4 @@
-import {Component, OnInit, signal, inject} from '@angular/core';
+import {Component, OnInit, signal, inject, ViewChild, ElementRef} from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
@@ -31,11 +31,15 @@ export class TastingAddComponent implements OnInit {
     private fb = inject(FormBuilder);
     private viewportScroller = inject(ViewportScroller);
 
+    @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
     tastingAddForm: FormGroup;
     loading = signal(false);
     error = signal<string | null>(null);
     success = signal<string | null>(null);
     user: User | null = null;
+    selectedFile = signal<File | null>(null);
+    previewImage = signal<string | null>(null);
 
     noteOptions = [
         {value: 0, label: '0'},
@@ -94,6 +98,30 @@ export class TastingAddComponent implements OnInit {
         this.user = this.authStateService.getCurrentUser();
     }
 
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            const file = input.files[0];
+
+            if (!file.type.startsWith('image/')) {
+                this.error.set('Veuillez sélectionner une image valide.');
+                return;
+            }
+
+            this.selectedFile.set(file);
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.previewImage.set(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    triggerFileInput() {
+        this.fileInput.nativeElement.click();
+    }
+
     async updateTasting() {
         Object.keys(this.tastingAddForm.controls).forEach(key => {
             this.tastingAddForm.get(key)?.markAsTouched();
@@ -112,6 +140,19 @@ export class TastingAddComponent implements OnInit {
             this.loading.set(true);
 
             const tastingData = this.tastingAddForm.getRawValue();
+            let pictureUrl: string | null = null;
+
+            if (this.selectedFile()) {
+                const file = this.selectedFile()!;
+                const fileExt = file.name.split('.').pop();
+                const filePath = `${Math.random()}.${fileExt}`;
+
+                pictureUrl = await this.tastingService.uploadTastingPicture(
+                    filePath,
+                    file,
+                    this.user.id,
+                );
+            }
 
             await this.tastingService.upsertTasting({
                 cafe_name: tastingData.cafeName,
@@ -123,17 +164,27 @@ export class TastingAddComponent implements OnInit {
                 choco_quality: tastingData.chocoQuality ? Number(tastingData.chocoQuality) : null,
                 choco_balance: tastingData.chocoBalance ? Number(tastingData.chocoBalance) : null,
                 comment: tastingData.comment || null,
-                picture_url: null,
+                picture_url: pictureUrl,
                 user_id: this.user.id,
             });
 
             this.success.set('Dégustation ajoutée !');
             this.viewportScroller.scrollToPosition([0, 0]);
+            this.resetForm();
         } catch (error) {
             this.error.set('Erreur lors de l\'ajout de la dégustation.');
             console.error('Erreur:', error);
         } finally {
             this.loading.set(false);
+        }
+    }
+
+    resetForm() {
+        this.tastingAddForm.reset();
+        this.selectedFile.set(null);
+        this.previewImage.set(null);
+        if (this.fileInput) {
+            this.fileInput.nativeElement.value = '';
         }
     }
 

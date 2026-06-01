@@ -13,7 +13,7 @@ export interface Profile {
 })
 export class ProfileService {
     private PROFILE_TABLE_NAME = 'profile';
-    private AVATAR_TABLE_NAME = 'avatars';
+    private AVATAR_BUCKET_NAME = 'avatars';
 
     async getProfile(userId: string): Promise<Profile | null> {
         const {data, error} = await supabase
@@ -48,7 +48,7 @@ export class ProfileService {
     async uploadAvatar(filePath: string, file: File, userId: string, oldAvatarPath?: string) {
         if (oldAvatarPath) {
             const {error: deleteError} = await supabase.storage
-                .from(this.AVATAR_TABLE_NAME)
+                .from(this.AVATAR_BUCKET_NAME)
                 .remove([`${userId}/${oldAvatarPath}`]);
 
             if (deleteError) {
@@ -59,7 +59,7 @@ export class ProfileService {
         const avatarFilePath = `${userId}/${filePath}`;
 
         const {error} = await supabase.storage
-            .from(this.AVATAR_TABLE_NAME)
+            .from(this.AVATAR_BUCKET_NAME)
             .upload(avatarFilePath, file, {upsert: true});
 
         if (error) {
@@ -70,12 +70,12 @@ export class ProfileService {
     }
 
     downLoadImage(path: string, userId: string) {
-        return supabase.storage.from(this.AVATAR_TABLE_NAME).download(`${userId}/${path}`);
+        return supabase.storage.from(this.AVATAR_BUCKET_NAME).download(`${userId}/${path}`);
     }
 
     getAvatarUrl(filePath: string): string {
         const {data} = supabase.storage
-            .from(this.AVATAR_TABLE_NAME)
+            .from(this.AVATAR_BUCKET_NAME)
             .getPublicUrl(filePath);
 
         return data.publicUrl;

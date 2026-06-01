@@ -164,22 +164,33 @@
 
         <label for="pictureUrl">
             <p>Photo</p>
-            <button app-button variant="primary">
-                <!--                @if (uploading()) {-->
-                <!--                    <svg lucideLoader [size]="16" class="animate-spin"></svg>-->
-                <!--                    En cours...-->
-                <!--                } @else {-->
-                <svg lucideUpload [size]="16"></svg>
-                Ajouter une photo
-                <!--                }-->
-            </button>
+            @if (previewImage()) {
+                <div class="mb-4">
+                    <img [src]="previewImage()" alt="Aperçu" class="size-36 object-cover rounded">
+                </div>
+            }
             <input
                 #fileInput
                 type="file"
                 id="pictureUrl"
                 accept="image/*"
                 class="invisible absolute"
+                (change)="onFileSelected($event)"
             />
+            <button
+                type="button"
+                app-button
+                variant="primary"
+                (click)="triggerFileInput()"
+                class="self-center"
+            >
+                <svg lucideUpload [size]="16"/>
+                @if (selectedFile()) {
+                    Image sélectionnée
+                } @else {
+                    Sélectionner une image
+                }
+            </button>
         </label>
 
         <button app-button type="submit" variant="tertiary" class="self-center">
