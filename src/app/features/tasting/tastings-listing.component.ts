@@ -5,11 +5,13 @@ import {TastingService} from './tasting.service';
 import {Tasting} from './tasting.model';
 import {AlertComponent} from '../../components/alert/alert.component';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {RouterLink} from '@angular/router';
 
 @Component({
     selector: 'app-tastings-listing',
     imports: [
-        AlertComponent
+        AlertComponent,
+        RouterLink
     ],
     templateUrl: './tastings-listing.component.html',
 })
@@ -20,7 +22,6 @@ export class TastingsListingComponent implements OnInit {
 
     loading = signal(false);
     error = signal<string | null>(null);
-    success = signal<string | null>(null);
     tastings = signal<Tasting[]>([]);
     pictureUrls = signal<Record<string, SafeResourceUrl | null>>({});
     user: User | null = null;
@@ -41,10 +42,9 @@ export class TastingsListingComponent implements OnInit {
             if (data) {
                 this.tastings.set(data);
                 await this.loadPictures(data);
-                console.log(this.pictureUrls);
             }
         } catch (error) {
-            this.error.set(`Erreur lors du chargement du profil. ${error}`);
+            this.error.set(`Erreur lors du chargement des dégustations. ${error}`);
         } finally {
             this.loading.set(false);
         }
@@ -73,13 +73,13 @@ export class TastingsListingComponent implements OnInit {
 
     getColorsByNote(note: number): { border: string; bg: string } {
         if (note <= 2) {
-            return { border: 'border-pink', bg: 'bg-yellow' };
+            return {border: 'border-pink', bg: 'bg-yellow'};
         } else if (note <= 5) {
-            return { border: 'border-orange', bg: 'bg-purple-light' };
+            return {border: 'border-orange', bg: 'bg-purple-light'};
         } else if (note <= 8) {
-            return { border: 'border-yellow', bg: 'bg-blue-light' };
+            return {border: 'border-yellow', bg: 'bg-blue-light'};
         } else {
-            return { border: 'border-blue-light', bg: 'bg-green' };
+            return {border: 'border-blue-light', bg: 'bg-green'};
         }
     }
 }

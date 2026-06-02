@@ -14,10 +14,26 @@ export class TastingService {
         const {data, error} = await supabase
             .from(this.TASTING_TABLE_NAME)
             .select('*')
-            .eq('user_id', userId);
+            .eq('user_id', userId)
+            .order('created_at', {ascending: false});
 
         if (error) {
             console.error('Erreur lors du chargement des dégustations:', error);
+            return null;
+        }
+
+        return data;
+    }
+
+    async getTasting(id: string): Promise<Tasting | null> {
+        const {data, error} = await supabase
+            .from(this.TASTING_TABLE_NAME)
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) {
+            console.error('Erreur lors du chargement de la dégustation:', error);
             return null;
         }
 
@@ -63,13 +79,5 @@ export class TastingService {
 
     downloadTastingPicture(path: string, userId: string) {
         return supabase.storage.from(this.TASTING_PICTURES_BUCKET_NAME).download(`${userId}/${path}`);
-    }
-
-    getTastingPictureUrl(filePath: string): string {
-        const {data} = supabase.storage
-            .from(this.TASTING_PICTURES_BUCKET_NAME)
-            .getPublicUrl(filePath);
-
-        return data.publicUrl;
     }
 }

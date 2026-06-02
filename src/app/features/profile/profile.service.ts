@@ -72,12 +72,4 @@ export class ProfileService {
     downLoadImage(path: string, userId: string) {
         return supabase.storage.from(this.AVATAR_BUCKET_NAME).download(`${userId}/${path}`);
     }
-
-    getAvatarUrl(filePath: string): string {
-        const {data} = supabase.storage
-            .from(this.AVATAR_BUCKET_NAME)
-            .getPublicUrl(filePath);
-
-        return data.publicUrl;
-    }
 }

@@ -1,0 +1,98 @@
+<section class="space-y-4">
+    @if (loading()) {
+        <p>Chargement...</p>
+    } @else if (error()) {
+        <p class="text-red">{{ error() }}</p>
+    } @else if (tasting()) {
+        <div class="flex items-center justify-between gap-4">
+            <div class="space-y-1">
+                <h2>{{ tasting().cafe_name }}</h2>
+                @if (tasting().cafe_location) {
+                    <div class="flex items-center gap-1">
+                        <svg lucideMapPin [size]="16" class="text-purple-light"/>
+                        <p>{{ tasting().cafe_location }}</p>
+                    </div>
+                }
+            </div>
+
+            <div>
+                <span class="text-2xl font-display text-pink">{{ tasting().note }}</span>
+                /10
+            </div>
+        </div>
+
+        @if (pictureUrl()) {
+            <img
+                [src]="pictureUrl()"
+                [alt]="tasting().cafe_name"
+                class="rounded border-7 border-blue-light w-full aspect-4/3 object-cover"
+            >
+        }
+
+        @if (tasting().choco_intensity || tasting().choco_quality || tasting().choco_balance) {
+            <div class="bg-brown text-beige-light p-4 rounded space-y-3">
+                <h3>Goût du chocolat</h3>
+
+                <div class="grid grid-cols-3 gap-y-4">
+                    @if (tasting().choco_intensity; as intensity) {
+                        <div>Intensité</div>
+                        <div class="col-span-2 grid grid-cols-3 items-center gap-x-1">
+                            @for (i of [1, 2, 3]; track i) {
+                                <div
+                                    class="w-full h-2"
+                                    [class.bg-pink]="i <= intensity"
+                                    [class.bg-beige-light]="i > intensity"
+                                ></div>
+                            }
+                        </div>
+                    }
+
+                    @if (tasting().choco_quality) {
+                        <div>Qualité</div>
+                        <div class="col-span-2 text-pink">
+                            {{ getChocoQuality(tasting().choco_quality) }}
+                        </div>
+                    }
+
+                    @if (tasting().choco_balance; as balance) {
+                        <div>Équilibre</div>
+                        <div class="col-span-2 space-y-1">
+                            <div class="grid grid-cols-5 items-center gap-x-1">
+                                @for (i of [1, 2, 3, 4, 5]; track i) {
+                                    <div
+                                        class="w-full h-2"
+                                        [class.bg-pink]="i <= balance"
+                                        [class.bg-beige-light]="i > balance"
+                                    ></div>
+                                }
+                            </div>
+                            <div class="flex items-center justify-between text-beige-light/75 text-xs">
+                                <p>Amer</p>
+                                <p>Sucré</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (tasting().price || tasting().comment) {
+            <div class="flex gap-4 *:flex-1">
+                @if (tasting().price) {
+                    <div class="flex items-center justify-center font-display text-lg">
+                        {{ tasting().price | currency:tasting().price_currency :'symbol-narrow' }}
+                    </div>
+                }
+
+                @if (tasting().comment) {
+                    <div class="bg-green rounded p-4 space-y-3">
+                        <h3 class="text-white">Commentaire</h3>
+                        {{ tasting().comment }}
+                    </div>
+                }
+            </div>
+        }
+    } @else {
+        <p>Aucune dégustation trouvée.</p>
+    }
+</section>

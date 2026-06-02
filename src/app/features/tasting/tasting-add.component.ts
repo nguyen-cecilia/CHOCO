@@ -41,6 +41,11 @@ export class TastingAddComponent implements OnInit {
     selectedFile = signal<File | null>(null);
     previewImage = signal<string | null>(null);
 
+    priceCurrencyOptions = [
+        {value: 'KRW', label: 'Wons'},
+        {value: 'EUR', label: 'Euros'},
+    ]
+
     noteOptions = [
         {value: 0, label: '0'},
         {value: 1, label: '1'},

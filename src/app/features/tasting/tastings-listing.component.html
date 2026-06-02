@@ -12,7 +12,7 @@
     } @else {
         <div class="flex flex-col gap-5">
             @for (tasting of tastings(); track tasting.id) {
-                <article class="grid grid-cols-3 gap-3">
+                <article [routerLink]="['degustation', tasting.id]" class="grid grid-cols-3 gap-3 cursor-pointer">
                     @if (getPictureUrl(tasting.id); as imageUrl) {
                         <img
                             [src]="imageUrl"
@@ -20,7 +20,8 @@
                             [class]="'aspect-square object-cover rounded border-6 ' + getColorsByNote(tasting.note).border"
                         />
                     } @else {
-                        <div class="aspect-square px-3 bg-brown text-white flex items-center justify-center text-center rounded">
+                        <div
+                            class="aspect-square px-3 bg-brown text-white flex items-center justify-center text-center rounded">
                             Pas d'image
                         </div>
                     }
