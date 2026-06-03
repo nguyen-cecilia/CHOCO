@@ -80,4 +80,15 @@ export class TastingService {
     downloadTastingPicture(path: string, userId: string) {
         return supabase.storage.from(this.TASTING_PICTURES_BUCKET_NAME).download(`${userId}/${path}`);
     }
+
+    async deleteTasting(id: string): Promise<void> {
+        const {error} = await supabase
+            .from(this.TASTING_TABLE_NAME)
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            throw error;
+        }
+    }
 }

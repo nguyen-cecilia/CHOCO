@@ -1,18 +1,24 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
 import {TastingService} from './tasting.service';
 import {Tasting} from './tasting.model';
-import {ActivatedRoute} from '@angular/router';
-import {LucideMapPin} from '@lucide/angular';
+import {ActivatedRoute, Router} from '@angular/router';
+import {LucideMapPin, LucidePencil, LucideTrash} from '@lucide/angular';
 import {CurrencyPipe} from '@angular/common';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {User} from '@supabase/supabase-js';
 import {AuthStateService} from '../auth/auth-state.service';
+import {ButtonComponent} from '../../components/button/button.component';
+import {ModalComponent} from '../../components/modal/modal.component';
 
 @Component({
     selector: 'app-tasting-detail',
     imports: [
         LucideMapPin,
-        CurrencyPipe
+        CurrencyPipe,
+        ButtonComponent,
+        LucideTrash,
+        LucidePencil,
+        ModalComponent
     ],
     templateUrl: './tasting-detail.component.html',
 })
@@ -20,13 +26,14 @@ export class TastingDetailComponent implements OnInit {
     private authStateService = inject(AuthStateService);
     private tastingService = inject(TastingService);
     private dom = inject(DomSanitizer);
+    private router = inject(Router);
+    private activatedRoute = inject(ActivatedRoute);
 
     loading = signal(false);
     error = signal<string | null>(null);
     tastingId = signal<string>('');
     tasting = signal<Tasting>({} as Tasting);
     pictureUrl = signal<SafeResourceUrl | null>(null);
-    private activatedRoute = inject(ActivatedRoute);
     user: User | null = null;
 
     constructor() {
@@ -74,5 +81,17 @@ export class TastingDetailComponent implements OnInit {
             return 'Non défini';
         }
         return this.qualityLabels[quality] ?? 'Inconnu';
+    }
+
+    async deleteTasting() {
+        try {
+            this.loading.set(true);
+            await this.tastingService.deleteTasting(this.tastingId());
+            await this.router.navigate(['/']);
+        } catch (error) {
+            this.error.set(`Erreur lors de la suppression. ${error}`);
+        } finally {
+            this.loading.set(false);
+        }
     }
 }

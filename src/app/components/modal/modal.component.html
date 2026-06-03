@@ -1,0 +1,28 @@
+@if (isOpen()) {
+    <div
+        tabindex="-1"
+        aria-hidden="true"
+        class="w-full h-full overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 inset-0 z-40 bg-linear-to-br from-brown/80 to-brown/65 backdrop-blur-xs"
+        (click)="close()"
+    >
+
+        <div class="relative flex items-center justify-center w-full h-full">
+            <div
+                class="relative bg-white rounded shadow-xl p-6 m-6 w-full space-y-6"
+                (click)="$event.stopPropagation()"
+            >
+                <div class="flex justify-between items-center">
+                    <h2>{{ this.title }}</h2>
+                    <button (click)="close()" class="cursor-pointer">
+                        <svg lucideX [size]="20" />
+                    </button>
+                </div>
+
+                <div class="space-y-3">
+                    <ng-content />
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

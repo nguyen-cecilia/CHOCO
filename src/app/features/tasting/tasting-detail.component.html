@@ -16,7 +16,7 @@
             </div>
 
             <div>
-                <span class="text-2xl font-display text-pink">{{ tasting().note }}</span>
+                <span class="text-2xl font-display text-pink leading-14">{{ tasting().note }}</span>
                 /10
             </div>
         </div>
@@ -92,6 +92,29 @@
                 }
             </div>
         }
+
+        <app-modal #modal
+           title="Confirmation"
+        >
+            <p>Supprimer cette dégustation ?</p>
+
+            <button app-button (click)="deleteTasting()" variant="invalid" class="ml-auto">
+                <svg lucideTrash [size]="16"/>
+                Supprimer
+            </button>
+        </app-modal>
+
+        <div class="flex items-center justify-between gap-4">
+            <button app-button variant="secondary">
+                <svg lucidePencil [size]="16"/>
+                Modifier
+            </button>
+
+            <button app-button (click)="modal.open()" variant="invalid">
+                <svg lucideTrash [size]="16"/>
+                Supprimer
+            </button>
+        </div>
     } @else {
         <p>Aucune dégustation trouvée.</p>
     }
