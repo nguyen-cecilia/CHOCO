@@ -254,7 +254,9 @@ export class TastingUpdateComponent implements OnInit {
     }
 
     resetForm() {
-        this.tastingUpdateForm.reset();
+        this.tastingUpdateForm.reset({
+            priceCurrency: '',
+        });
         this.selectedFile.set(null);
         this.previewImage.set(null);
         if (this.fileInput) {

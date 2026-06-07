@@ -6,12 +6,14 @@ import {Tasting} from './tasting.model';
 import {AlertComponent} from '../../components/alert/alert.component';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {RouterLink} from '@angular/router';
+import {LucideImage} from '@lucide/angular';
 
 @Component({
     selector: 'app-tastings-listing',
     imports: [
         AlertComponent,
-        RouterLink
+        RouterLink,
+        LucideImage
     ],
     templateUrl: './tastings-listing.component.html',
 })
