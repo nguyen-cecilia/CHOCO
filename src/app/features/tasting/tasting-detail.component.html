@@ -1,6 +1,8 @@
 <section class="space-y-4">
     @if (loading()) {
         <p>Chargement...</p>
+    } @else if (error()) {
+        <app-alert>{{ error() }}</app-alert>
     } @else if (tasting()) {
         @if (error()) {
             <app-alert>{{ error() }}</app-alert>

@@ -33,8 +33,7 @@ export class TastingService {
             .single();
 
         if (error) {
-            console.error('Erreur lors du chargement de la dégustation:', error);
-            return null;
+            throw new Error(`Erreur lors du chargement de la dégustation: ${error.message}`);
         }
 
         return data;
@@ -81,7 +80,17 @@ export class TastingService {
         return supabase.storage.from(this.TASTING_PICTURES_BUCKET_NAME).download(`${userId}/${path}`);
     }
 
-    async deleteTasting(id: string): Promise<void> {
+    async deleteTasting(id: string, userId: string, picturePath?: string): Promise<void> {
+        if (picturePath) {
+            const {error: deleteError} = await supabase.storage
+                .from(this.TASTING_PICTURES_BUCKET_NAME)
+                .remove([`${userId}/${picturePath}`]);
+
+            if (deleteError) {
+                console.error('Erreur lors de la suppression de l\'image:', deleteError);
+            }
+        }
+
         const {error} = await supabase
             .from(this.TASTING_TABLE_NAME)
             .delete()

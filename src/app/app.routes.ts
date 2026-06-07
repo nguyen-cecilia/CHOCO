@@ -5,6 +5,7 @@ import {authGuard} from './features/auth/auth.guard';
 import {ProfileComponent} from './features/profile/profile.component';
 import {TastingUpdateComponent} from './features/tasting/tasting-update.component';
 import {TastingDetailComponent} from './features/tasting/tasting-detail.component';
+import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
     {
@@ -32,5 +33,13 @@ export const routes: Routes = [
                 component: TastingUpdateComponent,
             }
         ],
+    },
+    {
+        path: 'not-found',
+        component: PageNotFoundComponent,
+    },
+    {
+        path: '**',
+        component: PageNotFoundComponent,
     },
 ];

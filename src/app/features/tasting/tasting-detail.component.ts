@@ -22,7 +22,7 @@ import {AlertComponent} from '../../components/alert/alert.component';
         LucidePencil,
         ModalComponent,
         TastingUpdateComponent,
-        AlertComponent
+        AlertComponent,
     ],
     templateUrl: './tasting-detail.component.html',
 })
@@ -70,7 +70,7 @@ export class TastingDetailComponent implements OnInit {
                 }
             }
         } catch (error) {
-            this.error.set(`Erreur lors du chargement de la dégustation. ${error}`);
+            this.error.set(`${error}`);
         } finally {
             this.loading.set(false);
         }
@@ -97,8 +97,10 @@ export class TastingDetailComponent implements OnInit {
 
     async deleteTasting() {
         try {
+            if (!this.user) return;
+
             this.loading.set(true);
-            await this.tastingService.deleteTasting(this.tastingId());
+            await this.tastingService.deleteTasting(this.tastingId(), this.user.id, this.tasting().picture_url || undefined);
             await this.router.navigate(['/']);
         } catch (error) {
             this.error.set(`Erreur lors de la suppression. ${error}`);
