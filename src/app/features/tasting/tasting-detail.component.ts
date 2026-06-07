@@ -9,6 +9,8 @@ import {User} from '@supabase/supabase-js';
 import {AuthStateService} from '../auth/auth-state.service';
 import {ButtonComponent} from '../../components/button/button.component';
 import {ModalComponent} from '../../components/modal/modal.component';
+import {TastingUpdateComponent} from './tasting-update.component';
+import {AlertComponent} from '../../components/alert/alert.component';
 
 @Component({
     selector: 'app-tasting-detail',
@@ -18,7 +20,9 @@ import {ModalComponent} from '../../components/modal/modal.component';
         ButtonComponent,
         LucideTrash,
         LucidePencil,
-        ModalComponent
+        ModalComponent,
+        TastingUpdateComponent,
+        AlertComponent
     ],
     templateUrl: './tasting-detail.component.html',
 })
@@ -31,6 +35,7 @@ export class TastingDetailComponent implements OnInit {
 
     loading = signal(false);
     error = signal<string | null>(null);
+    success = signal<string | null>(null);
     tastingId = signal<string>('');
     tasting = signal<Tasting>({} as Tasting);
     pictureUrl = signal<SafeResourceUrl | null>(null);
@@ -69,6 +74,13 @@ export class TastingDetailComponent implements OnInit {
         } finally {
             this.loading.set(false);
         }
+    }
+
+    async onTastingUpdated() {
+        this.loading.set(true);
+        await this.getTasting();
+        this.success.set('Dégustation modifiée !');
+        this.loading.set(false);
     }
 
     private qualityLabels: Record<number, string> = {

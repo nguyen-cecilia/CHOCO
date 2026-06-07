@@ -18,7 +18,6 @@ export class ModalComponent {
     }
 
     close(): void {
-        console.log('close modal');
         this.isOpen.set(false);
     }
 }

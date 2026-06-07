@@ -1,9 +1,15 @@
 <section class="space-y-4">
     @if (loading()) {
         <p>Chargement...</p>
-    } @else if (error()) {
-        <p class="text-red">{{ error() }}</p>
     } @else if (tasting()) {
+        @if (error()) {
+            <app-alert>{{ error() }}</app-alert>
+        }
+
+        @if (success()) {
+            <app-alert variant="success">{{ success() }}</app-alert>
+        }
+
         <div class="flex items-center justify-between gap-4">
             <div class="space-y-1">
                 <h2>{{ tasting().cafe_name }}</h2>
@@ -93,8 +99,14 @@
             </div>
         }
 
-        <app-modal #modal
-           title="Confirmation"
+        <app-modal #editModal
+                   title="Modifier la dégustation"
+        >
+            <app-tastings-add [tastingId]="tastingId()" (tastingUpdated)="onTastingUpdated()"/>
+        </app-modal>
+
+        <app-modal #deleteModal
+                   title="Confirmation"
         >
             <p>Supprimer cette dégustation ?</p>
 
@@ -105,12 +117,12 @@
         </app-modal>
 
         <div class="flex items-center justify-between gap-4">
-            <button app-button variant="secondary">
+            <button app-button (click)="editModal.open()" variant="secondary">
                 <svg lucidePencil [size]="16"/>
                 Modifier
             </button>
 
-            <button app-button (click)="modal.open()" variant="invalid">
+            <button app-button (click)="deleteModal.open()" variant="invalid">
                 <svg lucideTrash [size]="16"/>
                 Supprimer
             </button>

@@ -13,7 +13,7 @@ export class AlertComponent {
     @Input() variant: 'error' | 'success' = 'error';
 
     classes(): string {
-        const base = 'w-full rounded-sm px-5 py-2';
+        const base = 'block w-full rounded-sm px-5 py-2';
 
         const variants = {
             error: 'bg-red/30 text-red',

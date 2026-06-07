@@ -1,4 +1,4 @@
-import {Component, OnInit, signal, inject, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit, signal, inject, ViewChild, ElementRef, Input, EventEmitter, Output} from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
@@ -13,6 +13,8 @@ import {AlertComponent} from '../../components/alert/alert.component';
 import {ViewportScroller} from '@angular/common';
 import {TastingService} from './tasting.service';
 import {dependantFieldValidator} from '../../core/validators/dependant-field.directive';
+import {Tasting} from './tasting.model';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 @Component({
     selector: 'app-tastings-add',
@@ -23,14 +25,17 @@ import {dependantFieldValidator} from '../../core/validators/dependant-field.dir
         LucideSave,
         AlertComponent
     ],
-    templateUrl: './tasting-add.component.html',
+    templateUrl: './tasting-update.component.html',
 })
-export class TastingAddComponent implements OnInit {
+export class TastingUpdateComponent implements OnInit {
     private authStateService = inject(AuthStateService);
     private tastingService = inject(TastingService);
     private fb = inject(FormBuilder);
     private viewportScroller = inject(ViewportScroller);
+    private dom = inject(DomSanitizer);
 
+    @Input() tastingId: string | undefined = undefined;
+    @Output() tastingUpdated = new EventEmitter<void>();
     @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
     tastingAddForm: FormGroup;
@@ -40,6 +45,9 @@ export class TastingAddComponent implements OnInit {
     user: User | null = null;
     selectedFile = signal<File | null>(null);
     previewImage = signal<string | null>(null);
+    isEditMode = signal(false);
+    oldPictureUrl = signal<string | null>(null);
+    existingPicturePreview = signal<SafeResourceUrl | null>(null);
 
     priceCurrencyOptions = [
         {value: 'KRW', label: 'Wons'},
@@ -100,6 +108,55 @@ export class TastingAddComponent implements OnInit {
 
     async ngOnInit() {
         this.user = this.authStateService.getCurrentUser();
+
+        if (this.tastingId) {
+            this.isEditMode.set(true);
+            await this.loadTasting();
+        }
+    }
+
+    private async loadTasting() {
+        try {
+            this.loading.set(true);
+            const tasting = await this.tastingService.getTasting(this.tastingId!);
+
+            if (tasting && this.user) {
+                this.populateForm(tasting);
+
+                if (tasting.picture_url) {
+                    this.oldPictureUrl.set(tasting.picture_url);
+                    const {data: picture} = await this.tastingService.downloadTastingPicture(
+                        tasting.picture_url,
+                        this.user.id
+                    );
+                    if (picture instanceof Blob) {
+                        this.existingPicturePreview.set(
+                            this.dom.bypassSecurityTrustResourceUrl(URL.createObjectURL(picture))
+                        );
+                    }
+                }
+            }
+        } catch (error) {
+            this.error.set('Erreur lors du chargement de la dégustation.');
+            console.error('Erreur:', error);
+        } finally {
+            this.loading.set(false);
+        }
+    }
+
+    private populateForm(tasting: Tasting) {
+        this.tastingAddForm.patchValue({
+            cafeName: tasting.cafe_name,
+            cafeLocation: tasting.cafe_location || '',
+            price: tasting.price ? String(tasting.price) : '',
+            priceCurrency: tasting.price_currency || '',
+            note: tasting.note,
+            chocoIntensity: tasting.choco_intensity ? String(tasting.choco_intensity) : '',
+            chocoQuality: tasting.choco_quality ? String(tasting.choco_quality) : '',
+            chocoBalance: tasting.choco_balance ? String(tasting.choco_balance) : '',
+            comment: tasting.comment || '',
+            pictureUrl: tasting.picture_url || '',
+        });
     }
 
     onFileSelected(event: Event) {
@@ -155,10 +212,13 @@ export class TastingAddComponent implements OnInit {
                     filePath,
                     file,
                     this.user.id,
+                    this.oldPictureUrl() || undefined,
                 );
+            } else if (!this.selectedFile() && this.isEditMode()) {
+                pictureUrl = this.oldPictureUrl();
             }
 
-            await this.tastingService.upsertTasting({
+            const upsertData = {
                 cafe_name: tastingData.cafeName,
                 cafe_location: tastingData.cafeLocation || null,
                 price: tastingData.price ? Number(tastingData.price) : null,
@@ -170,13 +230,23 @@ export class TastingAddComponent implements OnInit {
                 comment: tastingData.comment || null,
                 picture_url: pictureUrl,
                 user_id: this.user.id,
-            });
+                ...(this.isEditMode() && {id: this.tastingId}),
+            };
 
-            this.success.set('Dégustation ajoutée !');
+            await this.tastingService.upsertTasting(upsertData);
+
+            const message = this.isEditMode() ? 'Dégustation modifiée !' : 'Dégustation ajoutée !';
+            this.success.set(message);
             this.viewportScroller.scrollToPosition([0, 0]);
-            this.resetForm();
+
+            if (!this.isEditMode()) {
+                this.resetForm();
+            } else {
+                this.tastingUpdated.emit();
+            }
         } catch (error) {
-            this.error.set('Erreur lors de l\'ajout de la dégustation.');
+            const errorMsg = this.isEditMode() ? 'Erreur lors de la modification.' : 'Erreur lors de l\'ajout.';
+            this.error.set(errorMsg);
             console.error('Erreur:', error);
         } finally {
             this.loading.set(false);
