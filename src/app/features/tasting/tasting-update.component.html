@@ -3,7 +3,7 @@
         <h1>Noter une dégustation</h1>
     }
 
-    <form [formGroup]="tastingAddForm" (ngSubmit)="updateTasting()">
+    <form [formGroup]="tastingUpdateForm" (ngSubmit)="updateTasting()">
         @if (error()) {
             <app-alert>{{ error() }}</app-alert>
         }
@@ -34,7 +34,7 @@
                 id="cafeLocation"
                 type="text"
                 formControlName="cafeLocation"
-                placeholder="Saisissez la localisation du café"
+                placeholder="Quartier du café"
             >
         </label>
 
@@ -45,7 +45,7 @@
                     id="price"
                     type="number"
                     formControlName="price"
-                    placeholder="Saisissez le prix"
+                    placeholder="Montant"
                 >
             </label>
 

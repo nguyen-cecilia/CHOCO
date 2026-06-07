@@ -38,7 +38,7 @@ export class TastingUpdateComponent implements OnInit {
     @Output() tastingUpdated = new EventEmitter<void>();
     @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-    tastingAddForm: FormGroup;
+    tastingUpdateForm: FormGroup;
     loading = signal(false);
     error = signal<string | null>(null);
     success = signal<string | null>(null);
@@ -88,7 +88,7 @@ export class TastingUpdateComponent implements OnInit {
     ];
 
     constructor() {
-        this.tastingAddForm = this.fb.group({
+        this.tastingUpdateForm = this.fb.group({
             cafeName: ['', [Validators.required, Validators.minLength(2)]],
             cafeLocation: [''],
             price: ['', [Validators.min(0)]],
@@ -145,7 +145,7 @@ export class TastingUpdateComponent implements OnInit {
     }
 
     private populateForm(tasting: Tasting) {
-        this.tastingAddForm.patchValue({
+        this.tastingUpdateForm.patchValue({
             cafeName: tasting.cafe_name,
             cafeLocation: tasting.cafe_location || '',
             price: tasting.price ? String(tasting.price) : '',
@@ -184,11 +184,11 @@ export class TastingUpdateComponent implements OnInit {
     }
 
     async updateTasting() {
-        Object.keys(this.tastingAddForm.controls).forEach(key => {
-            this.tastingAddForm.get(key)?.markAsTouched();
+        Object.keys(this.tastingUpdateForm.controls).forEach(key => {
+            this.tastingUpdateForm.get(key)?.markAsTouched();
         });
 
-        if (!this.tastingAddForm.valid || !this.user) {
+        if (!this.tastingUpdateForm.valid || !this.user) {
             this.success.set(null);
             this.error.set('Veuillez vérifier les champs du formulaire.');
             this.viewportScroller.scrollToPosition([0, 0]);
@@ -200,7 +200,7 @@ export class TastingUpdateComponent implements OnInit {
             this.success.set(null);
             this.loading.set(true);
 
-            const tastingData = this.tastingAddForm.getRawValue();
+            const tastingData = this.tastingUpdateForm.getRawValue();
             let pictureUrl: string | null = null;
 
             if (this.selectedFile()) {
@@ -254,7 +254,7 @@ export class TastingUpdateComponent implements OnInit {
     }
 
     resetForm() {
-        this.tastingAddForm.reset();
+        this.tastingUpdateForm.reset();
         this.selectedFile.set(null);
         this.previewImage.set(null);
         if (this.fileInput) {
@@ -263,15 +263,15 @@ export class TastingUpdateComponent implements OnInit {
     }
 
     formError(fieldName: string) {
-        const field = this.tastingAddForm.get(fieldName);
+        const field = this.tastingUpdateForm.get(fieldName);
         return field?.invalid && field?.touched;
     }
 
     get price() {
-        return this.tastingAddForm.get('price')
+        return this.tastingUpdateForm.get('price')
     }
 
     get priceCurrency() {
-        return this.tastingAddForm.get('priceCurrency')
+        return this.tastingUpdateForm.get('priceCurrency')
     }
 }
