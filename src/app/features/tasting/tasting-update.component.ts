@@ -151,9 +151,9 @@ export class TastingUpdateComponent implements OnInit {
             price: tasting.price ? String(tasting.price) : '',
             priceCurrency: tasting.price_currency || '',
             note: tasting.note,
-            chocoIntensity: tasting.choco_intensity ? String(tasting.choco_intensity) : '',
-            chocoQuality: tasting.choco_quality ? String(tasting.choco_quality) : '',
-            chocoBalance: tasting.choco_balance ? String(tasting.choco_balance) : '',
+            chocoIntensity: tasting.choco_intensity ? Number(tasting.choco_intensity) : '',
+            chocoQuality: tasting.choco_quality ? Number(tasting.choco_quality) : '',
+            chocoBalance: tasting.choco_balance ? Number(tasting.choco_balance) : '',
             comment: tasting.comment || '',
             pictureUrl: tasting.picture_url || '',
         });
