@@ -15,6 +15,7 @@ import {TastingService} from './tasting.service';
 import {dependantFieldValidator} from '../../core/validators/dependant-field.directive';
 import {Tasting} from './tasting.model';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {ImageOptimizerService} from '../../core/image-optimizer.service';
 
 @Component({
     selector: 'app-tastings-add',
@@ -33,6 +34,7 @@ export class TastingUpdateComponent implements OnInit {
     private fb = inject(FormBuilder);
     private viewportScroller = inject(ViewportScroller);
     private dom = inject(DomSanitizer);
+    private imageOptimizer = inject(ImageOptimizerService);
 
     @Input() tastingId: string | undefined = undefined;
     @Output() tastingUpdated = new EventEmitter<void>();
@@ -159,7 +161,7 @@ export class TastingUpdateComponent implements OnInit {
         });
     }
 
-    onFileSelected(event: Event) {
+    async onFileSelected(event: Event) {
         const input = event.target as HTMLInputElement;
         if (input.files && input.files.length > 0) {
             const file = input.files[0];
@@ -169,13 +171,20 @@ export class TastingUpdateComponent implements OnInit {
                 return;
             }
 
-            this.selectedFile.set(file);
+            try {
+                const preview = await this.imageOptimizer.createPreview(file);
+                this.previewImage.set(preview);
 
-            const reader = new FileReader();
-            reader.onload = () => {
-                this.previewImage.set(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+                const optimizedFile = await this.imageOptimizer.optimizeImage(file, {
+                    maxWidth: 1200,
+                    quality: 0.8,
+                    format: 'webp',
+                });
+                this.selectedFile.set(optimizedFile);
+            } catch (error) {
+                this.error.set('Erreur lors du traitement de l\'image.');
+                console.error('Erreur:', error);
+            }
         }
     }
 
@@ -205,8 +214,7 @@ export class TastingUpdateComponent implements OnInit {
 
             if (this.selectedFile()) {
                 const file = this.selectedFile()!;
-                const fileExt = file.name.split('.').pop();
-                const filePath = `${Math.random()}.${fileExt}`;
+                const filePath = `${Math.random()}.${file.name.split('.').pop()}`;
 
                 pictureUrl = await this.tastingService.uploadTastingPicture(
                     filePath,
