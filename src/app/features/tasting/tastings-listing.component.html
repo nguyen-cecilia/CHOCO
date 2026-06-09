@@ -27,17 +27,17 @@
                     }
 
                     <div
-                        [class]="'col-span-2 rounded px-3 flex items-center justify-between gap-6 ' + getColorsByNote(tasting.note).bg"
+                        [class]="'col-span-2 rounded px-3 flex items-center justify-between gap-3 ' + getColorsByNote(tasting.note).bg"
                     >
-                        <div class="flex flex-col justify-center gap-1">
-                            <h2>{{ tasting.cafe_name }}</h2>
+                        <div class="flex-1 flex flex-col justify-center">
+                            <h2 class="text-[24px] leading-5 whitespace-pre-line">{{ tasting.cafe_name }}</h2>
                             @if (tasting.cafe_location) {
-                                <p>{{ tasting.cafe_location }}</p>
+                                <p class="text-sm">{{ tasting.cafe_location }}</p>
                             }
                         </div>
 
-                        <div>
-                            <span class="text-white font-display text-2xl tracking-tighter">{{ tasting.note }}</span>/10
+                        <div class="w-fit">
+                            <span class="text-white font-display text-2xl tracking-tightest">{{ tasting.note }}</span>/10
                         </div>
                     </div>
                 </article>
