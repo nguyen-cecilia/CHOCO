@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 interface ImageOptimizationOptions {
-    maxWidth?: number;
+    maxSize?: number;
     quality?: number;
     format?: 'webp' | 'jpeg' | 'png';
     cropToSquare?: boolean;
@@ -27,42 +27,48 @@ export class ImageOptimizerService {
 
     private resizeImageOnCanvas(
         img: HTMLImageElement,
-        maxWidth: number,
+        maxSize: number,
         cropToSquare = false
     ): HTMLCanvasElement {
         const canvas = document.createElement('canvas');
         let {width, height} = img;
 
-        if (width > maxWidth) {
-            const ratio = maxWidth / width;
-            width = maxWidth;
+        if (width > maxSize || height > maxSize) {
+            const ratio = maxSize / Math.min(width, height);
+            width = Math.round(width * ratio);
             height = Math.round(height * ratio);
         }
 
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            throw new Error('Impossible d\'obtenir le contexte canvas');
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+
         if (cropToSquare) {
-            const size = Math.min(width, height);
-            const offsetX = (width - size) / 2;
-            const offsetY = (height - size) / 2;
+            const canvas2 = document.createElement('canvas');
 
-            canvas.width = size;
-            canvas.height = size;
+            let offsetX = 0;
+            let offsetY = 0;
 
-            const ctx = canvas.getContext('2d');
-            if (!ctx) {
-                throw new Error('Impossible d\'obtenir le contexte canvas');
+            if (width > maxSize) offsetX = Math.max(0, (width - maxSize) / 2);
+            if (height > maxSize) offsetY = Math.max(0, (height - maxSize) / 2);
+
+            canvas2.width = maxSize;
+            canvas2.height = maxSize;
+
+            const ctx2 = canvas2.getContext('2d');
+            if (!ctx2) {
+                throw new Error('Impossible d\'obtenir le contexte canvas2');
             }
 
-            ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size);
-        } else {
-            canvas.width = width;
-            canvas.height = height;
+            ctx2.drawImage(canvas, offsetX, offsetY, maxSize, maxSize, 0, 0, maxSize, maxSize);
 
-            const ctx = canvas.getContext('2d');
-            if (!ctx) {
-                throw new Error('Impossible d\'obtenir le contexte canvas');
-            }
-
-            ctx.drawImage(img, 0, 0, width, height);
+            return canvas2;
         }
 
         return canvas;
@@ -93,14 +99,14 @@ export class ImageOptimizerService {
         options: ImageOptimizationOptions = {}
     ): Promise<File> {
         const {
-            maxWidth = 800,
+            maxSize = 600,
             quality = 0.8,
             format = 'webp',
             cropToSquare = true
         } = options;
 
         const img = await this.loadImage(file);
-        const canvas = this.resizeImageOnCanvas(img, maxWidth, cropToSquare);
+        const canvas = this.resizeImageOnCanvas(img, maxSize, cropToSquare);
         const blob = await this.canvasToBlob(canvas, format, quality);
 
         return new File(
@@ -112,10 +118,10 @@ export class ImageOptimizerService {
 
     async createPreview(
         file: File,
-        maxWidth = 400
+        maxSize = 200
     ): Promise<string> {
         const img = await this.loadImage(file);
-        const canvas = this.resizeImageOnCanvas(img, maxWidth);
+        const canvas = this.resizeImageOnCanvas(img, maxSize);
         return canvas.toDataURL('image/webp', 0.8);
     }
 }

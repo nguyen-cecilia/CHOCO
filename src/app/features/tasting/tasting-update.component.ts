@@ -169,9 +169,10 @@ export class TastingUpdateComponent implements OnInit {
                 this.previewImage.set(preview);
 
                 const optimizedFile = await this.imageOptimizer.optimizeImage(file, {
-                    maxWidth: 1200,
+                    maxSize: 600,
                     quality: 0.8,
                     format: 'webp',
+                    cropToSquare: true,
                 });
                 this.selectedFile.set(optimizedFile);
             } catch (error) {
