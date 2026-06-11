@@ -5,8 +5,13 @@ import {TastingService} from './tasting.service';
 import {Tasting} from './tasting.model';
 import {AlertComponent} from '../../components/alert/alert.component';
 import {RouterLink} from '@angular/router';
-import {LucideImage} from '@lucide/angular';
+import {LucideArrowDown, LucideArrowUp, LucideFunnel, LucideImage, LucideRefreshCcw} from '@lucide/angular';
+import {DrawerComponent} from '../../components/drawer/drawer.component';
+import {ButtonComponent} from '../../components/button/button.component';
+import {ReactiveFormsModule} from '@angular/forms';
 import {NgOptimizedImage} from '@angular/common';
+
+type SortType = 'date' | 'note' | 'price' | 'name';
 
 @Component({
     selector: 'app-tastings-listing',
@@ -14,6 +19,7 @@ import {NgOptimizedImage} from '@angular/common';
         AlertComponent,
         RouterLink,
         LucideImage
+        LucideImage,
         NgOptimizedImage
     ],
     templateUrl: './tastings-listing.component.html',
@@ -25,7 +31,6 @@ export class TastingsListingComponent implements OnInit {
     loading = signal(false);
     error = signal<string | null>(null);
     tastings = signal<Tasting[]>([]);
-    pictureUrls = signal<Record<string, SafeResourceUrl | null>>({});
     pictureUrls = signal<Record<string, string>>({});
     user: User | null = null;
 
