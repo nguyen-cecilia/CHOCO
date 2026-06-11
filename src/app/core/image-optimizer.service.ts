@@ -4,6 +4,7 @@ interface ImageOptimizationOptions {
     maxWidth?: number;
     quality?: number;
     format?: 'webp' | 'jpeg' | 'png';
+    cropToSquare?: boolean;
 }
 
 @Injectable({providedIn: 'root'})
@@ -26,7 +27,8 @@ export class ImageOptimizerService {
 
     private resizeImageOnCanvas(
         img: HTMLImageElement,
-        maxWidth: number
+        maxWidth: number,
+        cropToSquare = false
     ): HTMLCanvasElement {
         const canvas = document.createElement('canvas');
         let {width, height} = img;
@@ -37,15 +39,32 @@ export class ImageOptimizerService {
             height = Math.round(height * ratio);
         }
 
-        canvas.width = width;
-        canvas.height = height;
+        if (cropToSquare) {
+            const size = Math.min(width, height);
+            const offsetX = (width - size) / 2;
+            const offsetY = (height - size) / 2;
 
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-            throw new Error('Impossible d\'obtenir le contexte canvas');
+            canvas.width = size;
+            canvas.height = size;
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                throw new Error('Impossible d\'obtenir le contexte canvas');
+            }
+
+            ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size);
+        } else {
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                throw new Error('Impossible d\'obtenir le contexte canvas');
+            }
+
+            ctx.drawImage(img, 0, 0, width, height);
         }
 
-        ctx.drawImage(img, 0, 0, width, height);
         return canvas;
     }
 
@@ -74,13 +93,14 @@ export class ImageOptimizerService {
         options: ImageOptimizationOptions = {}
     ): Promise<File> {
         const {
-            maxWidth = 1200,
+            maxWidth = 800,
             quality = 0.8,
-            format = 'webp'
+            format = 'webp',
+            cropToSquare = true
         } = options;
 
         const img = await this.loadImage(file);
-        const canvas = this.resizeImageOnCanvas(img, maxWidth);
+        const canvas = this.resizeImageOnCanvas(img, maxWidth, cropToSquare);
         const blob = await this.canvasToBlob(canvas, format, quality);
 
         return new File(

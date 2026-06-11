@@ -172,8 +172,13 @@
                 @if (previewImage()) {
                     <img [src]="previewImage()" alt="Aperçu" class="mb-4 size-36 object-cover rounded"/>
                 } @else if (existingPicturePreview()) {
-                    <img [src]="existingPicturePreview()" alt="Photo existante"
-                         class="mb-4 size-36 object-cover rounded"/>
+                    <img
+                        [ngSrc]="existingPicturePreview()"
+                        width="100"
+                        height="100"
+                        alt="Photo existante"
+                        class="mb-4 size-36 object-cover rounded"
+                    />
                 }
             </label>
             <input

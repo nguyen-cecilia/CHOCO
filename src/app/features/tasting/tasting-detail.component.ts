@@ -3,8 +3,7 @@ import {TastingService} from './tasting.service';
 import {Tasting} from './tasting.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LucideMapPin, LucidePencil, LucideTrash} from '@lucide/angular';
-import {CurrencyPipe} from '@angular/common';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {CurrencyPipe, NgOptimizedImage} from '@angular/common';
 import {User} from '@supabase/supabase-js';
 import {AuthStateService} from '../auth/auth-state.service';
 import {ButtonComponent} from '../../components/button/button.component';
@@ -23,13 +22,13 @@ import {AlertComponent} from '../../components/alert/alert.component';
         ModalComponent,
         TastingUpdateComponent,
         AlertComponent,
+        NgOptimizedImage,
     ],
     templateUrl: './tasting-detail.component.html',
 })
 export class TastingDetailComponent implements OnInit {
     private authStateService = inject(AuthStateService);
     private tastingService = inject(TastingService);
-    private dom = inject(DomSanitizer);
     private router = inject(Router);
     private activatedRoute = inject(ActivatedRoute);
 
@@ -38,7 +37,7 @@ export class TastingDetailComponent implements OnInit {
     success = signal<string | null>(null);
     tastingId = signal<string>('');
     tasting = signal<Tasting>({} as Tasting);
-    pictureUrl = signal<SafeResourceUrl | null>(null);
+    pictureUrl = signal<string>('');
     user: User | null = null;
 
     constructor() {
@@ -63,10 +62,8 @@ export class TastingDetailComponent implements OnInit {
                 this.tasting.set(data);
 
                 if (data.picture_url && this.user) {
-                    const {data: picture} = await this.tastingService.downloadTastingPicture(data.picture_url, this.user.id);
-                    if (picture instanceof Blob) {
-                        this.pictureUrl.set(this.dom.bypassSecurityTrustResourceUrl(URL.createObjectURL(picture)));
-                    }
+                    const url = await this.tastingService.getTastingPictureUrl(data.picture_url, this.user.id);
+                    this.pictureUrl.set(url || '');
                 }
             }
         } catch (error) {

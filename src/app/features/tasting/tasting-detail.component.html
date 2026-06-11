@@ -31,9 +31,11 @@
 
         @if (pictureUrl()) {
             <img
-                [src]="pictureUrl()"
+                [ngSrc]="pictureUrl()"
                 [alt]="tasting().cafe_name"
                 class="rounded border-7 border-blue-light w-full aspect-4/3 object-cover"
+                width="400"
+                height="400"
             >
         }
 

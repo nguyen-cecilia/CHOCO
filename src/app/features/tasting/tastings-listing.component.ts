@@ -4,9 +4,9 @@ import {User} from '@supabase/supabase-js';
 import {TastingService} from './tasting.service';
 import {Tasting} from './tasting.model';
 import {AlertComponent} from '../../components/alert/alert.component';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {RouterLink} from '@angular/router';
 import {LucideImage} from '@lucide/angular';
+import {NgOptimizedImage} from '@angular/common';
 
 @Component({
     selector: 'app-tastings-listing',
@@ -14,18 +14,19 @@ import {LucideImage} from '@lucide/angular';
         AlertComponent,
         RouterLink,
         LucideImage
+        NgOptimizedImage
     ],
     templateUrl: './tastings-listing.component.html',
 })
 export class TastingsListingComponent implements OnInit {
     private authStateService = inject(AuthStateService);
     private tastingService = inject(TastingService);
-    private dom = inject(DomSanitizer);
 
     loading = signal(false);
     error = signal<string | null>(null);
     tastings = signal<Tasting[]>([]);
     pictureUrls = signal<Record<string, SafeResourceUrl | null>>({});
+    pictureUrls = signal<Record<string, string>>({});
     user: User | null = null;
 
     async ngOnInit() {
@@ -53,24 +54,24 @@ export class TastingsListingComponent implements OnInit {
     }
 
     private async loadPictures(tastings: Tasting[]) {
-        const urls: Record<string, SafeResourceUrl | null> = {};
+        const urls: Record<string, string> = {};
 
-        for (const tasting of tastings) {
+        const picturePromises = tastings.map(async (tasting) => {
             if (tasting.picture_url && this.user) {
-                const {data} = await this.tastingService.downloadTastingPicture(tasting.picture_url, this.user.id);
-                if (data instanceof Blob) {
-                    urls[tasting.id] = this.dom.bypassSecurityTrustResourceUrl(URL.createObjectURL(data));
-                }
+                const url = await this.tastingService.getTastingPictureUrl(tasting.picture_url, this.user.id);
+                urls[tasting.id] = url || '';
             } else {
-                urls[tasting.id] = null;
+                urls[tasting.id] = '';
             }
-        }
+        });
 
+        await Promise.all(picturePromises);
         this.pictureUrls.set(urls);
     }
 
-    getPictureUrl(tastingId: string): SafeResourceUrl | null {
-        return this.pictureUrls()[tastingId] || null;
+    getPictureUrl(tastingId: string): string | null {
+        const url = this.pictureUrls()[tastingId];
+        return url && url.length > 0 ? url : null;
     }
 
     getColorsByNote(note: number): { border: string; bg: string } {

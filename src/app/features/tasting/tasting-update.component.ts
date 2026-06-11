@@ -10,11 +10,10 @@ import {AuthStateService} from '../auth/auth-state.service';
 import {ButtonComponent} from '../../components/button/button.component';
 import {LucideSave, LucideUpload} from '@lucide/angular';
 import {AlertComponent} from '../../components/alert/alert.component';
-import {ViewportScroller} from '@angular/common';
+import {NgOptimizedImage, ViewportScroller} from '@angular/common';
 import {TastingService} from './tasting.service';
 import {dependantFieldValidator} from '../../core/validators/dependant-field.directive';
 import {Tasting} from './tasting.model';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ImageOptimizerService} from '../../core/image-optimizer.service';
 
 @Component({
@@ -24,7 +23,8 @@ import {ImageOptimizerService} from '../../core/image-optimizer.service';
         ButtonComponent,
         LucideUpload,
         LucideSave,
-        AlertComponent
+        AlertComponent,
+        NgOptimizedImage
     ],
     templateUrl: './tasting-update.component.html',
 })
@@ -33,7 +33,6 @@ export class TastingUpdateComponent implements OnInit {
     private tastingService = inject(TastingService);
     private fb = inject(FormBuilder);
     private viewportScroller = inject(ViewportScroller);
-    private dom = inject(DomSanitizer);
     private imageOptimizer = inject(ImageOptimizerService);
 
     @Input() tastingId: string | undefined = undefined;
@@ -49,7 +48,7 @@ export class TastingUpdateComponent implements OnInit {
     previewImage = signal<string | null>(null);
     isEditMode = signal(false);
     oldPictureUrl = signal<string | null>(null);
-    existingPicturePreview = signal<SafeResourceUrl | null>(null);
+    existingPicturePreview = signal<string>('');
 
     priceCurrencyOptions = [
         {value: 'KRW', label: 'Wons'},
@@ -127,15 +126,9 @@ export class TastingUpdateComponent implements OnInit {
 
                 if (tasting.picture_url) {
                     this.oldPictureUrl.set(tasting.picture_url);
-                    const {data: picture} = await this.tastingService.downloadTastingPicture(
-                        tasting.picture_url,
-                        this.user.id
-                    );
-                    if (picture instanceof Blob) {
-                        this.existingPicturePreview.set(
-                            this.dom.bypassSecurityTrustResourceUrl(URL.createObjectURL(picture))
-                        );
-                    }
+
+                    const url = await this.tastingService.getTastingPictureUrl(tasting.picture_url, this.user.id);
+                    this.existingPicturePreview.set(url || '');
                 }
             }
         } catch (error) {

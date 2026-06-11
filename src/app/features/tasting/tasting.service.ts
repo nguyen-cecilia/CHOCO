@@ -76,8 +76,11 @@ export class TastingService {
         return filePath;
     }
 
-    downloadTastingPicture(path: string, userId: string) {
-        return supabase.storage.from(this.TASTING_PICTURES_BUCKET_NAME).download(`${userId}/${path}`);
+    async getTastingPictureUrl(path: string, userId: string, expiresIn = 3600) {
+        const {data} = await supabase.storage
+            .from(this.TASTING_PICTURES_BUCKET_NAME)
+            .createSignedUrl(`${userId}/${path}`, expiresIn);
+        return data?.signedUrl || null;
     }
 
     async deleteTasting(id: string, userId: string, picturePath?: string): Promise<void> {
