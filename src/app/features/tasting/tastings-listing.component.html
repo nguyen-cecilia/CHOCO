@@ -10,8 +10,58 @@
     } @else if (tastings().length === 0) {
         <p>Aucune dégustation enregistrée.</p>
     } @else {
+        <div class="flex items-center justify-between gap-6">
+            <label for="search">
+                <input
+                    id="search"
+                    type="text"
+                    placeholder="Rechercher..."
+                    [value]="searchQuery()"
+                    (input)="onSearchInput($event)"
+                >
+            </label>
+
+            <button app-button variant="tertiary" (click)="filters.open()">
+                <svg lucideFunnel [size]="16" />
+                Filtrer
+            </button>
+        </div>
+
+        <app-drawer #filters title="Filtrer les dégustations">
+            <button
+                app-button
+                (click)="resetFilters()"
+                variant="secondary"
+                class="ml-auto"
+            >
+                <svg lucideRefreshCcw [size]="16" />
+                Tout réinitialiser
+            </button>
+
+            <h3>Trier par</h3>
+
+            <div class="flex flex-wrap items-center gap-2">
+                @for (option of sortOptions; track option.id) {
+                    <button
+                        app-button
+                        (click)="setSortBy(option.id)"
+                        class="{{ sortBy() === option.id ? 'bg-pink text-white' : '' }}"
+                    >
+                        {{ option.label }}
+                        @if (sortBy() === option.id) {
+                            @if (sortOrder() === 'asc') {
+                                <svg lucideArrowUp [size]="16" />
+                            } @else {
+                                <svg lucideArrowDown [size]="16" />
+                            }
+                        }
+                    </button>
+                }
+            </div>
+        </app-drawer>
+
         <div class="flex flex-col gap-5">
-            @for (tasting of tastings(); track tasting.id) {
+            @for (tasting of filteredTastings(); track tasting.id) {
                 <article [routerLink]="['degustation', tasting.id]" class="grid grid-cols-3 gap-3 cursor-pointer">
                     @if (getPictureUrl(tasting.id); as imageUrl) {
                         <img

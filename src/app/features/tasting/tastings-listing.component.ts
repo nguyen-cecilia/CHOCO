@@ -1,4 +1,4 @@
-import {Component, inject, signal, OnInit} from '@angular/core';
+import {Component, inject, signal, OnInit, computed} from '@angular/core';
 import {AuthStateService} from '../auth/auth-state.service';
 import {User} from '@supabase/supabase-js';
 import {TastingService} from './tasting.service';
@@ -18,8 +18,14 @@ type SortType = 'date' | 'note' | 'price' | 'name';
     imports: [
         AlertComponent,
         RouterLink,
-        LucideImage
         LucideImage,
+        DrawerComponent,
+        ButtonComponent,
+        LucideArrowDown,
+        LucideArrowUp,
+        LucideFunnel,
+        LucideRefreshCcw,
+        ReactiveFormsModule,
         NgOptimizedImage
     ],
     templateUrl: './tastings-listing.component.html',
@@ -32,7 +38,17 @@ export class TastingsListingComponent implements OnInit {
     error = signal<string | null>(null);
     tastings = signal<Tasting[]>([]);
     pictureUrls = signal<Record<string, string>>({});
+    sortBy = signal<SortType>('date');
+    sortOrder = signal<'asc' | 'desc'>('desc');
+    searchQuery = signal('');
     user: User | null = null;
+
+    sortOptions = [
+        {id: 'date', label: 'Date'},
+        {id: 'note', label: 'Note'},
+        {id: 'price', label: 'Prix'},
+        {id: 'name', label: 'Nom du café'},
+    ] as const;
 
     async ngOnInit() {
         this.user = this.authStateService.getCurrentUser();
@@ -89,5 +105,73 @@ export class TastingsListingComponent implements OnInit {
         } else {
             return {border: 'border-blue-light', bg: 'bg-green'};
         }
+    }
+
+    resetFilters() {
+        this.sortBy.set('date');
+        this.sortOrder.set('desc');
+        this.sortTastings();
+
+        this.searchQuery.set('');
+    }
+
+    filteredTastings = computed(() => {
+        const query = this.searchQuery().toLowerCase();
+        if (!query) return this.tastings();
+
+        return this.tastings().filter(t =>
+            t.cafe_name.toLowerCase().includes(query) ||
+            t.cafe_location?.toLowerCase().includes(query)
+        );
+    });
+
+    onSearchInput(event: Event): void {
+        const value = (event.target as HTMLInputElement).value;
+        if (value.length > 2 || value.length === 0) {
+            this.searchQuery.set(value);
+        }
+    }
+
+    setSortBy(sortType: SortType) {
+        if (this.sortBy() === sortType) {
+            this.sortOrder.set(this.sortOrder() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortBy.set(sortType);
+            this.sortOrder.set((sortType === 'name' || sortType === 'price') ? 'asc' : 'desc');
+        }
+        this.sortTastings();
+    }
+
+    private sortTastings() {
+        const sorted = [...this.tastings()].sort((a, b) => {
+            let compareValue = 0;
+
+            switch (this.sortBy()) {
+                case 'date': {
+                    const dateA = new Date(a.created_at || 0).getTime();
+                    const dateB = new Date(b.created_at || 0).getTime();
+                    compareValue = dateA - dateB;
+                    break;
+                }
+                case 'note': {
+                    compareValue = a.note - b.note;
+                    break;
+                }
+                case 'price': {
+                    const priceA = a.price ?? 0;
+                    const priceB = b.price ?? 0;
+                    compareValue = priceA - priceB;
+                    break;
+                }
+                case 'name': {
+                    compareValue = a.cafe_name.localeCompare(b.cafe_name);
+                    break;
+                }
+            }
+
+            return this.sortOrder() === 'asc' ? compareValue : -compareValue;
+        });
+
+        this.tastings.set(sorted);
     }
 }

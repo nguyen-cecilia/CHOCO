@@ -1,0 +1,31 @@
+@if (isOpen()) {
+    <div
+        class="fixed inset-0 z-40 bg-linear-to-br from-brown/80 to-brown/65 backdrop-blur-xs"
+        (click)="close()"
+        aria-hidden="true"
+    ></div>
+}
+
+<div
+    [class.translate-y-full]="!isOpen()"
+    [class.translate-y-0]="isOpen()"
+    class="bg-beige-light fixed bottom-0 left-0 right-0 z-40 max-h-[90vh] overflow-y-auto transition-transform duration-300 rounded-t mx-auto lg:max-w-120"
+    tabindex="-1"
+    aria-labelledby="drawer-label"
+>
+    <div class="flex justify-between items-center p-4">
+        <h2 id="drawer-label">{{ this.title }}</h2>
+        <button
+            type="button"
+            (click)="close()"
+            aria-label="Fermer le tiroir"
+            class="cursor-pointer p-2 rounded-full bg-white hover:bg-brown hover:text-white focus:outline-none shrink-0"
+        >
+            <svg lucideX [size]="20"/>
+        </button>
+    </div>
+
+    <div class="px-4 pb-6 space-y-4">
+        <ng-content/>
+    </div>
+</div>

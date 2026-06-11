@@ -45,7 +45,7 @@ Tasting form:
 - [ ] Add as draft
 
 Tasting listing:
-- [ ] Sort by date, note, price
+- [x] Sort by date, note, price, name
 - [ ] Filter by location
 - [ ] Search
 - [ ] View as list, cards, table (?)
