@@ -47,8 +47,9 @@ Tasting form:
 Tasting listing:
 - [x] Sort by date, note, price, name
 - [ ] ~~Filter by location~~
-- [x] Search
-- [ ] View as list, cards, table (?)
+- [x] Search by name, location
+- [x] View as a list, cards, table (?)
+- [ ] Pagination or infinite scroll
 
 Tasting to taste listing:
 - [ ] Create the listing
@@ -56,3 +57,4 @@ Tasting to taste listing:
 Profile / settings:
 - [ ] Change currency
 - [ ] More stats (?)
+- [ ] Dark mode

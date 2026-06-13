@@ -1,5 +1,5 @@
 <section class="space-y-6">
-    <h1>Dégustations</h1>
+    <h1>Dégustations ({{ tastings().length }})</h1>
 
     @if (error()) {
         <app-alert>{{ error() }}</app-alert>
@@ -27,15 +27,34 @@
         </div>
 
         <app-drawer #filters title="Filtrer les dégustations">
-            <button
-                app-button
-                (click)="resetFilters()"
-                variant="secondary"
-                class="ml-auto"
-            >
-                <svg lucideRefreshCcw [size]="16" />
-                Tout réinitialiser
-            </button>
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-ceenter gap-1 bg-orange/15 rounded-full p-1">
+                    <button
+                        (click)="viewMode.set('list')"
+                        [class]="(viewMode() === 'list' ? 'bg-brown text-white ' : 'cursor-pointer hover:bg-brown/15 ') + 'rounded-full p-2 transition-all'"
+                        [disabled]="viewMode() === 'list'"
+                    >
+                        <svg lucideList [size]="16" />
+                    </button>
+                    <button
+                        (click)="viewMode.set('grid')"
+                        [class]="(viewMode() === 'grid' ? 'bg-brown text-white ' : 'cursor-pointer hover:bg-brown/15 ') + 'rounded-full p-2 transition-all'"
+                        [disabled]="viewMode() === 'grid'"
+                    >
+                        <svg lucideLayoutGrid [size]="16" />
+                    </button>
+                </div>
+
+                <button
+                    app-button
+                    (click)="resetFilters()"
+                    variant="secondary"
+                    class="ml-auto"
+                >
+                    <svg lucideRefreshCcw [size]="16" />
+                    Tout réinitialiser
+                </button>
+            </div>
 
             <h3>Trier par</h3>
 
@@ -59,39 +78,69 @@
             </div>
         </app-drawer>
 
-        <div class="flex flex-col gap-5">
+        <div [class]="viewMode() === 'list' ? 'flex flex-col gap-5' : 'grid grid-cols-2 gap-3'">
             @for (tasting of filteredTastings(); track tasting.id) {
-                <article [routerLink]="['degustation', tasting.id]" class="grid grid-cols-3 gap-3 cursor-pointer">
-                    @if (getPictureUrl(tasting.id); as imageUrl) {
-                        <img
-                            [ngSrc]="imageUrl"
-                            [alt]="tasting.cafe_name"
-                            [class]="'w-full h-auto aspect-square object-cover rounded border-6 ' + getColorsByNote(tasting.note).border"
-                            width="600"
-                            height="600"
-                        />
-                    } @else {
-                        <div
-                            class="aspect-square px-3 bg-brown text-white flex items-center justify-center text-center rounded">
-                            <svg lucideImage [size]="24"/>
-                        </div>
-                    }
+                @if (viewMode() === 'list') {
+                    <article [routerLink]="['degustation', tasting.id]" class="grid grid-cols-3 gap-3 cursor-pointer">
+                        @if (getPictureUrl(tasting.id); as imageUrl) {
+                            <img
+                                [ngSrc]="imageUrl"
+                                [alt]="tasting.cafe_name"
+                                [class]="'w-full h-auto aspect-square object-cover rounded border-6 ' + getColorsByNote(tasting.note).border"
+                                width="600"
+                                height="600"
+                            />
+                        } @else {
+                            <div
+                                class="aspect-square px-3 bg-brown text-white flex items-center justify-center text-center rounded">
+                                <svg lucideImage [size]="24"/>
+                            </div>
+                        }
 
-                    <div
-                        [class]="'col-span-2 rounded px-3 flex items-center justify-between gap-3 ' + getColorsByNote(tasting.note).bg"
-                    >
-                        <div class="flex-1 flex flex-col justify-center">
+                        <div
+                            [class]="'col-span-2 rounded px-3 flex items-center justify-between gap-3 ' + getColorsByNote(tasting.note).bg"
+                        >
+                            <div class="flex-1 flex flex-col justify-center">
+                                <h2 class="text-[24px] leading-5 whitespace-pre-line">{{ tasting.cafe_name }}</h2>
+                                @if (tasting.cafe_location) {
+                                    <p class="text-sm">{{ tasting.cafe_location }}</p>
+                                }
+                            </div>
+
+                            <div class="w-fit">
+                                <span class="text-white font-display text-2xl tracking-tightest">{{ tasting.note }}</span>/10
+                            </div>
+                        </div>
+                    </article>
+                } @else {
+                    <article [routerLink]="['degustation', tasting.id]" [class]="'relative flex flex-col gap-3 pt-2 px-2 pb-2.5 rounded cursor-pointer ' + getColorsByNote(tasting.note).bg">
+                        @if (getPictureUrl(tasting.id); as imageUrl) {
+                            <img
+                                [ngSrc]="imageUrl"
+                                [alt]="tasting.cafe_name"
+                                [class]="'w-full h-auto aspect-square object-cover rounded border-6 ' + getColorsByNote(tasting.note).border"
+                                width="600"
+                                height="600"
+                            />
+                        } @else {
+                            <div
+                                class="aspect-square px-3 bg-brown text-white flex items-center justify-center text-center rounded">
+                                <svg lucideImage [size]="24"/>
+                            </div>
+                        }
+
+                        <div class="flex-1 flex flex-col justify-center px-2">
                             <h2 class="text-[24px] leading-5 whitespace-pre-line">{{ tasting.cafe_name }}</h2>
                             @if (tasting.cafe_location) {
                                 <p class="text-sm">{{ tasting.cafe_location }}</p>
                             }
                         </div>
 
-                        <div class="w-fit">
-                            <span class="text-white font-display text-2xl tracking-tightest">{{ tasting.note }}</span>/10
+                        <div class="absolute top-5 right-5 bg-beige-light rounded-full px-2 py-0.5">
+                            {{ tasting.note }}/10
                         </div>
-                    </div>
-                </article>
+                    </article>
+                }
             }
         </div>
     }

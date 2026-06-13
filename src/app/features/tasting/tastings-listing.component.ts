@@ -5,13 +5,21 @@ import {TastingService} from './tasting.service';
 import {Tasting} from './tasting.model';
 import {AlertComponent} from '../../components/alert/alert.component';
 import {RouterLink} from '@angular/router';
-import {LucideArrowDown, LucideArrowUp, LucideFunnel, LucideImage, LucideRefreshCcw} from '@lucide/angular';
+import {
+    LucideArrowDown,
+    LucideArrowUp,
+    LucideFunnel,
+    LucideImage,
+    LucideLayoutGrid,
+    LucideList,
+    LucideRefreshCcw
+} from '@lucide/angular';
 import {DrawerComponent} from '../../components/drawer/drawer.component';
 import {ButtonComponent} from '../../components/button/button.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NgOptimizedImage} from '@angular/common';
 
-type SortType = 'date' | 'note' | 'price' | 'name';
+type SortType = 'creationDate' | 'lastEditDate' | 'note' | 'price' | 'name';
 
 @Component({
     selector: 'app-tastings-listing',
@@ -26,7 +34,9 @@ type SortType = 'date' | 'note' | 'price' | 'name';
         LucideFunnel,
         LucideRefreshCcw,
         ReactiveFormsModule,
-        NgOptimizedImage
+        NgOptimizedImage,
+        LucideLayoutGrid,
+        LucideList
     ],
     templateUrl: './tastings-listing.component.html',
 })
@@ -38,13 +48,15 @@ export class TastingsListingComponent implements OnInit {
     error = signal<string | null>(null);
     tastings = signal<Tasting[]>([]);
     pictureUrls = signal<Record<string, string>>({});
-    sortBy = signal<SortType>('date');
+    sortBy = signal<SortType>('creationDate');
     sortOrder = signal<'asc' | 'desc'>('desc');
     searchQuery = signal('');
+    viewMode = signal<'grid' | 'list'>('list');
     user: User | null = null;
 
     sortOptions = [
-        {id: 'date', label: 'Date'},
+        {id: 'creationDate', label: 'Date de création'},
+        {id: 'lastEditDate', label: 'Dernière modification'},
         {id: 'note', label: 'Note'},
         {id: 'price', label: 'Prix'},
         {id: 'name', label: 'Nom du café'},
@@ -108,7 +120,7 @@ export class TastingsListingComponent implements OnInit {
     }
 
     resetFilters() {
-        this.sortBy.set('date');
+        this.sortBy.set('creationDate');
         this.sortOrder.set('desc');
         this.sortTastings();
 
@@ -147,9 +159,15 @@ export class TastingsListingComponent implements OnInit {
             let compareValue = 0;
 
             switch (this.sortBy()) {
-                case 'date': {
+                case 'creationDate': {
                     const dateA = new Date(a.created_at || 0).getTime();
                     const dateB = new Date(b.created_at || 0).getTime();
+                    compareValue = dateA - dateB;
+                    break;
+                }
+                case 'lastEditDate': {
+                    const dateA = new Date(a.updated_at || 0).getTime();
+                    const dateB = new Date(b.updated_at || 0).getTime();
                     compareValue = dateA - dateB;
                     break;
                 }
