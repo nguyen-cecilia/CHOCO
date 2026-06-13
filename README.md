@@ -46,8 +46,8 @@ Tasting form:
 
 Tasting listing:
 - [x] Sort by date, note, price, name
-- [ ] Filter by location
-- [ ] Search
+- [ ] ~~Filter by location~~
+- [x] Search
 - [ ] View as list, cards, table (?)
 
 Tasting to taste listing:

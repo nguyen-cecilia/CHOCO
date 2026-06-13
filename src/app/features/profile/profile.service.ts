@@ -45,7 +45,7 @@ export class ProfileService {
         }
     }
 
-    async uploadAvatar(filePath: string, file: File, userId: string, oldAvatarPath?: string) {
+    async uploadAvatar(filePath: string, file: File, userId: string, oldAvatarPath: string | null) {
         if (oldAvatarPath) {
             const {error: deleteError} = await supabase.storage
                 .from(this.AVATAR_BUCKET_NAME)
@@ -69,7 +69,10 @@ export class ProfileService {
         return avatarFilePath;
     }
 
-    downLoadImage(path: string, userId: string) {
-        return supabase.storage.from(this.AVATAR_BUCKET_NAME).download(`${userId}/${path}`);
+    async getAvatarUrl(path: string, userId: string, expiresIn = 3600) {
+        const {data} = await supabase.storage
+            .from(this.AVATAR_BUCKET_NAME)
+            .createSignedUrl(`${userId}/${path}`, expiresIn);
+        return data?.signedUrl || null;
     }
 }

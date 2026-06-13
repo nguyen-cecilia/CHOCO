@@ -1,19 +1,21 @@
-<div class="space-y-4 flex flex-col items-center">
+<div class="flex flex-col gap-4 items-center">
     @if (_avatarUrl() && !loading()) {
         <img
-            [src]="_avatarUrl()"
+            [ngSrc]="_avatarUrl()"
+            width="300"
+            height="300"
             alt="Avatar"
-            class="max-size-36 aspect-square object-cover rounded-sm"
+            class="object-cover rounded-sm"
         />
     }
 
     @if (!_avatarUrl() || loading()) {
-        <div class="bg-brown text-white flex justify-center items-center size-36 rounded-sm">
+        <div class="w-full bg-brown text-white flex justify-center items-center aspect-square rounded-sm">
             @if (loading()) {
                 <div
                     class="size-7 rounded-full border-5 border-y-white border-l-white border-r-transparent animate-spin"></div>
             } @else {
-                Aucun avatar
+                <svg lucideImage [size]="24"/>
             }
         </div>
     }

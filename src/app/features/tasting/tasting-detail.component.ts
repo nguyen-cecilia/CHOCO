@@ -1,8 +1,8 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
 import {TastingService} from './tasting.service';
 import {Tasting} from './tasting.model';
-import {ActivatedRoute, Router} from '@angular/router';
-import {LucideMapPin, LucidePencil, LucideTrash} from '@lucide/angular';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {LucideArrowLeft, LucideMapPin, LucidePencil, LucideTrash} from '@lucide/angular';
 import {CurrencyPipe, NgOptimizedImage} from '@angular/common';
 import {User} from '@supabase/supabase-js';
 import {AuthStateService} from '../auth/auth-state.service';
@@ -23,6 +23,8 @@ import {AlertComponent} from '../../components/alert/alert.component';
         TastingUpdateComponent,
         AlertComponent,
         NgOptimizedImage,
+        RouterLink,
+        LucideArrowLeft,
     ],
     templateUrl: './tasting-detail.component.html',
 })

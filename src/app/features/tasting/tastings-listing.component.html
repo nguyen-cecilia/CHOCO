@@ -11,7 +11,7 @@
         <p>Aucune dégustation enregistrée.</p>
     } @else {
         <div class="flex items-center justify-between gap-6">
-            <label for="search">
+            <label for="search" class="flex-1">
                 <input
                     id="search"
                     type="text"
@@ -21,9 +21,8 @@
                 >
             </label>
 
-            <button app-button variant="tertiary" (click)="filters.open()">
-                <svg lucideFunnel [size]="16" />
-                Filtrer
+            <button app-button variant="tertiary" shape="round" (click)="filters.open()">
+                <svg lucideFunnel [size]="24" />
             </button>
         </div>
 
