@@ -1,0 +1,224 @@
+<section class="space-y-6">
+    <h1>Tableau de bord</h1>
+
+    @if (error()) {
+        <app-alert>{{ error() }}</app-alert>
+    }
+
+    @if (loading()) {
+        <p>Chargement des statistiques...</p>
+    } @else if (statistics()) {
+        @if (statistics()!.totalCount === 0) {
+            <p>Aucune dégustation enregistrée.</p>
+
+            <button app-button variant="primary" routerLink="/ajouter-degustation">
+                Commencer maintenant
+            </button>
+        } @else {
+            <div class="grid grid-cols-2 gap-3 content-center *:rounded *:p-4 *:bg-linear-to-br *:space-y-1">
+                <div class="from-blue-light to-blue-light/50">
+                    <p class="text-2xl leading-12 font-display">{{ statistics()!.totalCount }}</p>
+                    <p class="text-sm text-beige-light">Dégustations totales</p>
+                </div>
+
+                <div class="from-green to-green/50">
+                    <p>
+                        <span
+                            class="text-2xl leading-12 font-display tracking-tightest">{{ statistics()!.averageNote }}</span>
+                        /10
+                    </p>
+                    <p class="text-sm text-beige-light">Note moyenne</p>
+                </div>
+
+                <div class="from-orange to-orange/50">
+                    <p class="text-2xl leading-12 font-display">{{ statistics()!.uniqueLocations }}</p>
+                    <p class="text-sm text-beige-light flex items-center gap-1">
+                        <svg lucideMapPin [size]="16"/>
+                        Localités
+                    </p>
+                </div>
+
+                <div class="from-pink to-pink/50">
+                    <p>
+                        <span
+                            class="text-2xl leading-12 font-display tracking-tightest">{{ statistics()!.excellentPercentage }}</span>
+                        %
+                    </p>
+                    <p class="text-sm text-beige-light flex items-center gap-1">
+                        <svg lucideZap [size]="16"/>
+                        Excellentes (≥ 8)
+                    </p>
+                </div>
+            </div>
+
+            <div class="rounded px-6 py-4 border border-blue-light space-y-6">
+                <h2>Distribution des notes</h2>
+
+                <div class="space-y-3">
+                    @for (range of ['0-2', '3-5', '6-8', '9-10']; track range) {
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 text-sm font-medium">{{ range }}</span>
+
+                            <div class="flex-1 h-6 bg-orange/10 rounded-full overflow-hidden">
+                                @if (statistics()!.noteDistribution[range] > 0) {
+                                    <div
+                                        [style.width.%]="(statistics()!.noteDistribution[range] / statistics()!.totalCount) * 100"
+                                        class="h-full bg-linear-to-r from-orange via-pink to-purple transition-all"
+                                    ></div>
+                                }
+                            </div>
+
+                            <span
+                                class="w-5 text-right text-sm font-medium">{{ statistics()!.noteDistribution[range] }}</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="rounded px-6 py-4 border border-green space-y-6">
+                <h2 class="flex items-center gap-2">
+                    <svg lucideHeart [size]="20" class="text-pink"/>
+                    Quartier favoris
+                </h2>
+
+                @if (statistics(); as stats) {
+                    @if (stats.mostTastedLocation) {
+                        <div class="text-center">
+                            <p class="text-xl font-medium tracking-tighter text-pink">{{ stats.mostTastedLocation.location }}</p>
+                            <p class="text-sm text-brown/50">{{ stats.mostTastedLocation.count }} dégustation(s)</p>
+                        </div>
+                    } @else {
+                        <p>Aucune localité enregistrée</p>
+                    }
+                }
+            </div>
+
+            <div class="rounded px-6 py-4 border border-purple space-y-6">
+                <h2 class="flex items-center gap-2">
+                    <svg lucideAward [size]="20" class="text-green"/>
+                    Top 3 meilleurs
+                </h2>
+
+                <div class="space-y-3">
+                    @for (tasting of statistics()!.topThreeBest; track tasting.id; let i = $index) {
+                        <div [routerLink]="['/', 'degustation', tasting.id]"
+                             class="flex items-center gap-3 cursor-pointer hover:bg-pink/15 p-2 rounded transition-all">
+                            @if (pictureService.getPictureUrl(pictureUrls(), tasting.id); as imageUrl) {
+                                <img
+                                    [ngSrc]="imageUrl"
+                                    [alt]="tasting.cafe_name"
+                                    class="w-12 h-12 rounded-sm object-cover"
+                                    width="50"
+                                    height="50"
+                                />
+                            } @else {
+                                <div class="w-12 h-12 bg-brown text-white flex items-center justify-center rounded-sm">
+                                    <svg lucideImage [size]="16"/>
+                                </div>
+                            }
+
+                            <div class="flex-1">
+                                <p class="font-semibold text-sm">{{ i + 1 }}. {{ tasting.cafe_name }}</p>
+                                @if (tasting.cafe_location) {
+                                    <p class="text-xs text-brown/50">{{ tasting.cafe_location }}</p>
+                                }
+                            </div>
+
+                            <p class="text-sm">
+                                <span
+                                    class="font-display text-xl tracking-tightest text-green">{{ tasting.note }}</span>
+                                /10
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="rounded px-6 py-4 border border-orange space-y-6">
+                <h2 class="flex items-center gap-2">
+                    <svg lucideThumbsDown [size]="20" class="text-blue-light"/>
+                    Top 3 pires
+                </h2>
+
+                <div class="space-y-3">
+                    @for (tasting of statistics()!.topThreeWorst; track tasting.id; let i = $index) {
+                        <div [routerLink]="['/', 'degustation', tasting.id]"
+                             class="flex items-center gap-3 cursor-pointer hover:bg-yellow/15 p-2 rounded transition-all">
+                            @if (pictureService.getPictureUrl(pictureUrls(), tasting.id); as imageUrl) {
+                                <img
+                                    [ngSrc]="imageUrl"
+                                    [alt]="tasting.cafe_name"
+                                    class="w-12 h-12 rounded-sm object-cover"
+                                    width="50"
+                                    height="50"
+                                />
+                            } @else {
+                                <div class="w-12 h-12 bg-brown text-white flex items-center justify-center rounded-sm">
+                                    <svg lucideImage [size]="16"/>
+                                </div>
+                            }
+
+                            <div class="flex-1">
+                                <p class="font-semibold text-sm">{{ i + 1 }}. {{ tasting.cafe_name }}</p>
+                                @if (tasting.cafe_location) {
+                                    <p class="text-xs text-brown/50">{{ tasting.cafe_location }}</p>
+                                }
+                            </div>
+
+                            <p class="text-sm">
+                                <span
+                                    class="font-display text-xl tracking-tightest text-blue-light">{{ tasting.note }}</span>
+                                /10
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <h2 class="flex items-center gap-2">
+                    <svg lucideClock [size]="20" class="text-purple-light"/>
+                    5 dernières dégustations
+                </h2>
+
+                <div class="space-y-3">
+                    @for (tasting of statistics()!.lastFiveTastings; track tasting.id) {
+                        <div [routerLink]="['/', 'degustation', tasting.id]" class="flex gap-3 cursor-pointer">
+                            @if (pictureService.getPictureUrl(pictureUrls(), tasting.id); as imageUrl) {
+                                <img
+                                    [ngSrc]="imageUrl"
+                                    [alt]="tasting.cafe_name"
+                                    [class]="'w-1/3 h-auto rounded object-cover border-6 ' + colorService.getColorsByNote(tasting.note).border"
+                                    width="60"
+                                    height="60"
+                                />
+                            } @else {
+                                <div
+                                    class="w-1/3 h-auto aspect-square bg-brown text-white flex items-center justify-center rounded">
+                                    <svg lucideImage [size]="20"/>
+                                </div>
+                            }
+
+                            <div
+                                [class]="'flex-1 flex items-center justify-between gap-3 rounded px-3 py-1 bg-linear-to-tl ' + colorService.getColorsByNote(tasting.note).bg">
+                                <div>
+                                    <p class="font-display text-md leading-6 tracking-tighter">{{ tasting.cafe_name }}</p>
+                                    @if (tasting.cafe_location) {
+                                        <p class="text-sm text-brown">{{ tasting.cafe_location }}</p>
+                                    }
+                                    <p class="text-xs text-brown/50">{{ tasting.created_at | date: 'dd/MM/yyyy' }}</p>
+                                </div>
+
+                                <div>
+                                    <span
+                                        class="text-2xl font-display text-white tracking-tightest">{{ tasting.note }}</span>
+                                    /10
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</section>

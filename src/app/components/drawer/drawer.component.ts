@@ -2,11 +2,11 @@ import {Component, Input, signal} from '@angular/core';
 import {LucideX} from '@lucide/angular';
 
 @Component({
-  selector: 'app-drawer',
+    selector: 'app-drawer',
     imports: [
         LucideX
     ],
-  templateUrl: './drawer.component.html',
+    templateUrl: './drawer.component.html',
 })
 export class DrawerComponent {
     @Input() isOpen = signal(false);

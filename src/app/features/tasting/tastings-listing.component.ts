@@ -18,6 +18,8 @@ import {DrawerComponent} from '../../components/drawer/drawer.component';
 import {ButtonComponent} from '../../components/button/button.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NgOptimizedImage} from '@angular/common';
+import {ColorService} from '../../core/color.service';
+import {PictureService} from '../../core/picture.service';
 
 type SortType = 'creationDate' | 'lastEditDate' | 'note' | 'price' | 'name';
 
@@ -43,6 +45,8 @@ type SortType = 'creationDate' | 'lastEditDate' | 'note' | 'price' | 'name';
 export class TastingsListingComponent implements OnInit {
     private authStateService = inject(AuthStateService);
     private tastingService = inject(TastingService);
+    protected pictureService = inject(PictureService);
+    protected colorService = inject(ColorService);
 
     loading = signal(false);
     error = signal<string | null>(null);
@@ -77,45 +81,13 @@ export class TastingsListingComponent implements OnInit {
             const data = await this.tastingService.getTastings(this.user.id);
             if (data) {
                 this.tastings.set(data);
-                await this.loadPictures(data);
+                const urls = await this.pictureService.loadPictures(data, this.user.id);
+                this.pictureUrls.set(urls);
             }
         } catch (error) {
             this.error.set(`Erreur lors du chargement des dégustations. ${error}`);
         } finally {
             this.loading.set(false);
-        }
-    }
-
-    private async loadPictures(tastings: Tasting[]) {
-        const urls: Record<string, string> = {};
-
-        const picturePromises = tastings.map(async (tasting) => {
-            if (tasting.picture_url && this.user) {
-                const url = await this.tastingService.getTastingPictureUrl(tasting.picture_url, this.user.id);
-                urls[tasting.id] = url || '';
-            } else {
-                urls[tasting.id] = '';
-            }
-        });
-
-        await Promise.all(picturePromises);
-        this.pictureUrls.set(urls);
-    }
-
-    getPictureUrl(tastingId: string): string | null {
-        const url = this.pictureUrls()[tastingId];
-        return url && url.length > 0 ? url : null;
-    }
-
-    getColorsByNote(note: number): { border: string; bg: string } {
-        if (note <= 2) {
-            return {border: 'border-pink', bg: 'bg-yellow'};
-        } else if (note <= 5) {
-            return {border: 'border-orange', bg: 'bg-purple-light'};
-        } else if (note <= 8) {
-            return {border: 'border-yellow', bg: 'bg-blue-light'};
-        } else {
-            return {border: 'border-blue-light', bg: 'bg-green'};
         }
     }
 

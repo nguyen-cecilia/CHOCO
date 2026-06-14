@@ -4,7 +4,7 @@
     } @else if (error()) {
         <app-alert>{{ error() }}</app-alert>
     } @else if (tasting()) {
-        <button app-button routerLink="/">
+        <button app-button (click)="location.back()">
             <svg lucideArrowLeft [size]="16"/>
             Retour
         </button>

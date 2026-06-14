@@ -36,10 +36,12 @@ Main features:
 ### V2
 
 Home / dashboard :
-- [ ] Last tastings added
-- [ ] Add tasting
-- [ ] Quick stats
-- [ ] Current top 3
+- [x] Last tastings added (5)
+- [ ] ~~Add tasting~~
+- [x] Quick stats: total number, average score, location number, "excellent" (note > 8) rate in %
+- [x] Current top 3 best, top 5 worst
+- [x] Distribution of notes
+- [x] Location with the most tastings
 
 Tasting form:
 - [ ] Add as draft
@@ -56,5 +58,5 @@ Tasting to taste listing:
 
 Profile / settings:
 - [ ] Change currency
-- [ ] More stats (?)
+- [ ] ~~More stats (?)~~
 - [ ] Dark mode

@@ -15,15 +15,26 @@
 @if ((authState.isAuthenticated$() && !authState.loading$())) {
     <nav
         class="fixed bottom-5 left-0 right-0 mx-auto w-fit flex items-center gap-2 bg-blue-light p-1 rounded-full shadow-xl shadow-brown/25">
-        @for (item of navItems; track item.label) {
+        @for (item of navItems; track item.icon) {
             <button
                 app-button
                 variant="menu"
+                shape="round"
                 [routerLink]="item.route"
                 routerLinkActive="bg-brown text-white"
                 [routerLinkActiveOptions]="{ exact: item.route === '' }"
             >
-                {{ item.label }}
+                @switch (item.icon) {
+                    @case ('lucideHouse') {
+                        <svg lucideHouse [size]="24"></svg>
+                    }
+                    @case ('lucideCoffee') {
+                        <svg lucideCoffee [size]="24"></svg>
+                    }
+                    @case ('lucideUser') {
+                        <svg lucideUser [size]="24"></svg>
+                    }
+                }
             </button>
         }
         <button
@@ -34,7 +45,7 @@
             routerLinkActive="bg-brown!"
             [routerLinkActiveOptions]="{ exact: true }"
         >
-            <svg lucidePlus [size]="20"></svg>
+            <svg lucidePlus [size]="24"></svg>
         </button>
     </nav>
 }

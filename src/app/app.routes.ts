@@ -6,6 +6,7 @@ import {ProfileComponent} from './features/profile/profile.component';
 import {TastingUpdateComponent} from './features/tasting/tasting-update.component';
 import {TastingDetailComponent} from './features/tasting/tasting-detail.component';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
+import {DashboardComponent} from './features/dashboard/dashboard.component';
 
 export const routes: Routes = [
     {
@@ -18,6 +19,10 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
+                component: DashboardComponent,
+            },
+            {
+                path: 'degustations',
                 component: TastingsListingComponent,
             },
             {

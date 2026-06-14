@@ -1,9 +1,9 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
 import {TastingService} from './tasting.service';
 import {Tasting} from './tasting.model';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {LucideArrowLeft, LucideMapPin, LucidePencil, LucideTrash} from '@lucide/angular';
-import {CurrencyPipe, NgOptimizedImage} from '@angular/common';
+import {CurrencyPipe, Location, NgOptimizedImage} from '@angular/common';
 import {User} from '@supabase/supabase-js';
 import {AuthStateService} from '../auth/auth-state.service';
 import {ButtonComponent} from '../../components/button/button.component';
@@ -23,7 +23,6 @@ import {AlertComponent} from '../../components/alert/alert.component';
         TastingUpdateComponent,
         AlertComponent,
         NgOptimizedImage,
-        RouterLink,
         LucideArrowLeft,
     ],
     templateUrl: './tasting-detail.component.html',
@@ -33,6 +32,7 @@ export class TastingDetailComponent implements OnInit {
     private tastingService = inject(TastingService);
     private router = inject(Router);
     private activatedRoute = inject(ActivatedRoute);
+    protected location = inject(Location);
 
     loading = signal(false);
     error = signal<string | null>(null);
