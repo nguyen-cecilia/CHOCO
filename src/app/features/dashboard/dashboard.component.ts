@@ -20,6 +20,7 @@ import {AlertComponent} from '../../components/alert/alert.component';
 import {ButtonComponent} from '../../components/button/button.component';
 import {ColorService} from '../../core/color.service';
 import {PictureService} from '../../core/picture.service';
+import {Profile, ProfileService} from '../profile/profile.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -44,6 +45,7 @@ export class DashboardComponent implements OnInit {
     private authStateService = inject(AuthStateService);
     private tastingService = inject(TastingService);
     private statisticsService = inject(DashboardService);
+    private profileService = inject(ProfileService);
     protected pictureService = inject(PictureService);
     protected colorService = inject(ColorService);
 
@@ -52,12 +54,15 @@ export class DashboardComponent implements OnInit {
     tastings = signal<Tasting[]>([]);
     statistics = signal<TastingStatistics | null>(null);
     pictureUrls = signal<Record<string, string>>({});
+    displayName = signal<string>('Inconnu');
     user: User | null = null;
 
     async ngOnInit() {
         this.user = this.authStateService.getCurrentUser();
         if (this.user) {
             await this.loadTastings();
+            const profile = await this.profileService.getProfile(this.user.id);
+            if (profile) this.displayName.set(profile.display_name);
         }
     }
 

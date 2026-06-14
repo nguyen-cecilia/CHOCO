@@ -30,14 +30,14 @@
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-ceenter gap-1 bg-orange/15 rounded-full p-1">
                     <button
-                        (click)="viewMode.set('list')"
+                        (click)="setViewMode('list')"
                         [class]="(viewMode() === 'list' ? 'bg-brown text-white ' : 'cursor-pointer hover:bg-brown/15 ') + 'rounded-full p-2 transition-all'"
                         [disabled]="viewMode() === 'list'"
                     >
                         <svg lucideList [size]="16"/>
                     </button>
                     <button
-                        (click)="viewMode.set('grid')"
+                        (click)="setViewMode('grid')"
                         [class]="(viewMode() === 'grid' ? 'bg-brown text-white ' : 'cursor-pointer hover:bg-brown/15 ') + 'rounded-full p-2 transition-all'"
                         [disabled]="viewMode() === 'grid'"
                     >
@@ -116,7 +116,7 @@
                     </article>
                 } @else {
                     <article [routerLink]="['/', 'degustation', tasting.id]"
-                             [class]="'relative flex flex-col gap-3 pt-2 px-2 pb-2.5 rounded cursor-pointer ' + colorService.getColorsByNote(tasting.note).bg">
+                             [class]="'relative flex flex-col gap-3 pt-2 px-2 pb-2.5 rounded bg-linear-to-tl cursor-pointer ' + colorService.getColorsByNote(tasting.note).bg">
                         @if (pictureService.getPictureUrl(pictureUrls(), tasting.id); as imageUrl) {
                             <img
                                 [ngSrc]="imageUrl"

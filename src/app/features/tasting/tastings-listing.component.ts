@@ -55,7 +55,7 @@ export class TastingsListingComponent implements OnInit {
     sortBy = signal<SortType>('creationDate');
     sortOrder = signal<'asc' | 'desc'>('desc');
     searchQuery = signal('');
-    viewMode = signal<'grid' | 'list'>('list');
+    viewMode = signal<'grid' | 'list'>(this.loadViewMode());
     user: User | null = null;
 
     sortOptions = [
@@ -71,6 +71,16 @@ export class TastingsListingComponent implements OnInit {
         if (this.user) {
             await this.getTastings();
         }
+    }
+
+    private loadViewMode(): 'grid' | 'list' {
+        const saved = localStorage.getItem('tastingViewMode');
+        return (saved === 'grid' || saved === 'list') ? saved : 'list';
+    }
+
+    setViewMode(mode: 'grid' | 'list') {
+        this.viewMode.set(mode);
+        localStorage.setItem('tastingViewMode', mode);
     }
 
     private async getTastings() {

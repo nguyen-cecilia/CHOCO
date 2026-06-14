@@ -1,6 +1,4 @@
 <section class="space-y-6">
-    <h1>Tableau de bord</h1>
-
     @if (error()) {
         <app-alert>{{ error() }}</app-alert>
     }
@@ -9,12 +7,16 @@
         <p>Chargement des statistiques...</p>
     } @else if (statistics()) {
         @if (statistics()!.totalCount === 0) {
+            <h1>Hello, {{ displayName() }}</h1>
+
             <p>Aucune dégustation enregistrée.</p>
 
             <button app-button variant="primary" routerLink="/ajouter-degustation">
                 Commencer maintenant
             </button>
         } @else {
+            <h1>Hello, {{ displayName() }}</h1>
+
             <div class="grid grid-cols-2 gap-3 content-center *:rounded *:p-4 *:bg-linear-to-br *:space-y-1">
                 <div class="from-blue-light to-blue-light/50">
                     <p class="text-2xl leading-12 font-display">{{ statistics()!.totalCount }}</p>
