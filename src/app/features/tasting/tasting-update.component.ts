@@ -15,6 +15,7 @@ import {TastingService} from './tasting.service';
 import {dependantFieldValidator} from '../../core/validators/dependant-field.directive';
 import {Tasting} from './tasting.model';
 import {ImageOptimizerService} from '../../core/image-optimizer.service';
+import {ProfileService} from '../profile/profile.service';
 
 @Component({
     selector: 'app-tastings-add',
@@ -34,6 +35,7 @@ export class TastingUpdateComponent implements OnInit {
     private fb = inject(FormBuilder);
     private viewportScroller = inject(ViewportScroller);
     private imageOptimizer = inject(ImageOptimizerService);
+    private profileService = inject(ProfileService);
 
     @Input() tastingId: string | undefined = undefined;
     @Output() tastingUpdated = new EventEmitter<void>();
@@ -49,11 +51,7 @@ export class TastingUpdateComponent implements OnInit {
     isEditMode = signal(false);
     oldPictureUrl = signal<string | null>(null);
     existingPicturePreview = signal<string>('');
-
-    priceCurrencyOptions = [
-        {value: 'KRW', label: 'Wons'},
-        {value: 'EUR', label: 'Euros'},
-    ]
+    priceCurrencyOptions = signal<{value: string, label: string}[]>([]);
 
     noteOptions = [
         {value: 0, label: '0'},
@@ -109,6 +107,10 @@ export class TastingUpdateComponent implements OnInit {
 
     async ngOnInit() {
         this.user = this.authStateService.getCurrentUser();
+
+        if (this.user) {
+            await this.loadUserCurrencies();
+        }
 
         if (this.tastingId) {
             this.isEditMode.set(true);
@@ -269,6 +271,43 @@ export class TastingUpdateComponent implements OnInit {
     formError(fieldName: string) {
         const field = this.tastingUpdateForm.get(fieldName);
         return field?.invalid && field?.touched;
+    }
+
+    private async loadUserCurrencies() {
+        try {
+            if (!this.user) return;
+
+            const profile = await this.profileService.getProfile(this.user.id);
+            const currencies = profile?.currencies || ['EUR', 'KRW'];
+
+            this.priceCurrencyOptions.set(
+                currencies.map(code => ({
+                    value: code,
+                    label: this.getCurrencyLabel(code)
+                }))
+            );
+        } catch (error) {
+            console.error('Erreur lors du chargement des devises:', error);
+            // Fallback aux devises par défaut
+            this.priceCurrencyOptions.set([
+                {value: 'EUR', label: 'Euros'},
+                {value: 'KRW', label: 'Wons'},
+            ]);
+        }
+    }
+
+    private getCurrencyLabel(code: string): string {
+        const currencyMap: Record<string, string> = {
+            'EUR': 'Euros',
+            'USD': 'Dollars US',
+            'GBP': 'Livres Sterling',
+            'JPY': 'Yen Japonais',
+            'KRW': 'Wons Coréens',
+            'CHF': 'Francs Suisses',
+            'CAD': 'Dollars Canadiens',
+            'AUD': 'Dollars Australiens',
+        };
+        return currencyMap[code] || code;
     }
 
     get price() {

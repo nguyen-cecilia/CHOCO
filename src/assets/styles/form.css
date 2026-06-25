@@ -27,6 +27,14 @@
         }
     }
 
+    input[type='checkbox'] {
+        @apply form-checkbox size-5 border-2 border-brown bg-transparent rounded-xs text-pink cursor-pointer shadow-pink focus:ring-offset-0 focus:ring-0 focus:ring-transparent focus:shadow-md checked:shadow-md;
+
+        ~ label {
+            @apply text-base cursor-pointer;
+        }
+    }
+
     input[type='text'],
     input[type='number'],
     input[type='email'],

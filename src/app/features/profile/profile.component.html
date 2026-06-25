@@ -74,6 +74,23 @@
                 </label>
             </div>
 
+            <div class="space-y-6">
+                <h2>Modifier les devises</h2>
+
+                <div class="grid grid-cols-[auto_auto] justify-start items-center gap-3">
+                    @for (currency of availableCurrencies; track currency.value) {
+                        <input
+                            type="checkbox"
+                            [id]="'currency-' + currency.value"
+                            [value]="currency.value"
+                            (change)="onCurrencyChange($event, currency.value)"
+                            [checked]="profileForm.get('currencies')?.value?.includes(currency.value)"
+                        >
+                        <label [for]="'currency-' + currency.value">{{ currency.label }}</label>
+                    }
+                </div>
+            </div>
+
             <button app-button type="submit" variant="tertiary" class="self-center">
                 <svg lucideSave [size]="16"/>
                 Sauvegarder

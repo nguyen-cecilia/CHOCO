@@ -57,6 +57,6 @@ Tasting to taste listing:
 - [ ] Create the listing
 
 Profile / settings:
-- [ ] Change currency
+- [x] Change currency
 - [ ] ~~More stats (?)~~
 - [ ] Dark mode

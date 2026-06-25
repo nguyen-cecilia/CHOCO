@@ -20,7 +20,7 @@ import {AlertComponent} from '../../components/alert/alert.component';
 import {ButtonComponent} from '../../components/button/button.component';
 import {ColorService} from '../../core/color.service';
 import {PictureService} from '../../core/picture.service';
-import {Profile, ProfileService} from '../profile/profile.service';
+import {ProfileService} from '../profile/profile.service';
 
 @Component({
     selector: 'app-dashboard',

@@ -30,11 +30,23 @@ export class ProfileComponent implements OnInit {
     success = signal<string | null>(null);
     user: User | null = null;
 
+    availableCurrencies = [
+        {value: 'EUR', label: '€ Euro'},
+        {value: 'USD', label: '$ Dollar US'},
+        {value: 'GBP', label: '£ Livre Sterling'},
+        {value: 'JPY', label: '¥ Yen Japonais'},
+        {value: 'KRW', label: '₩ Won Coréen'},
+        {value: 'CHF', label: 'CHF Franc Suisse'},
+        {value: 'CAD', label: '$ Dollar Canadien'},
+        {value: 'AUD', label: '$ Dollar Australien'},
+    ];
+
     constructor() {
         this.profileForm = this.fb.group({
             email: [{value: '', disabled: true}],
             displayName: ['', [Validators.required, Validators.minLength(3)]],
             avatarUrl: [''],
+            currencies: [[]],
             newPassword: [''],
             newPasswordConfirm: [''],
         });
@@ -69,6 +81,7 @@ export class ProfileComponent implements OnInit {
                 email: this.user.email,
                 avatarUrl: profile?.avatar_url || '',
                 displayName: profile?.display_name || '',
+                currencies: profile?.currencies || ['EUR', 'KRW'],
             });
         } catch (error) {
             this.error.set(`Erreur lors du chargement du profil. ${error}`);
@@ -86,12 +99,13 @@ export class ProfileComponent implements OnInit {
         try {
             this.loading.set(true);
 
-            const {displayName, avatarUrl, newPassword, newPasswordConfirm} = this.profileForm.getRawValue();
+            const {displayName, avatarUrl, currencies, newPassword, newPasswordConfirm} = this.profileForm.getRawValue();
 
             await this.profileService.updateProfile({
                 id: this.user.id,
                 display_name: displayName,
                 avatar_url: avatarUrl,
+                currencies: currencies || [],
             });
 
             if (newPassword && newPasswordConfirm) {
@@ -111,6 +125,24 @@ export class ProfileComponent implements OnInit {
         } finally {
             this.loading.set(false);
         }
+    }
+
+    onCurrencyChange(event: Event, currency: string) {
+        const checkbox = event.target as HTMLInputElement;
+        const currencies = this.profileForm.get('currencies')?.value || [];
+
+        if (checkbox.checked) {
+            if (!currencies.includes(currency)) {
+                currencies.push(currency);
+            }
+        } else {
+            const index = currencies.indexOf(currency);
+            if (index > -1) {
+                currencies.splice(index, 1);
+            }
+        }
+
+        this.profileForm.get('currencies')?.setValue([...currencies]);
     }
 
     async signOut() {

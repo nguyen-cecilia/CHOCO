@@ -54,7 +54,7 @@
                 <select id="priceCurrency" formControlName="priceCurrency"
                         [class.border-red]="formError('priceCurrency')">
                     <option value="" selected>-Devise-</option>
-                    @for (currency of priceCurrencyOptions; track currency.value) {
+                    @for (currency of priceCurrencyOptions(); track currency.value) {
                         <option [value]="currency.value">{{ currency.label }}</option>
                     }
                 </select>

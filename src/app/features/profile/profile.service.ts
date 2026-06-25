@@ -5,6 +5,7 @@ export interface Profile {
     id: string;
     display_name: string;
     avatar_url: string;
+    currencies?: string[];
     updated_at?: string;
 }
 
@@ -37,6 +38,7 @@ export class ProfileService {
                 id: profile.id,
                 display_name: profile.display_name,
                 avatar_url: profile.avatar_url,
+                currencies: profile.currencies || [],
                 updated_at: new Date().toISOString(),
             });
 
