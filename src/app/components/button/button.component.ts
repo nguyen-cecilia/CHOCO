@@ -21,16 +21,16 @@ export class ButtonComponent {
         const base = 'flex items-center gap-2 leading-4 text-sm transition-all cursor-pointer';
 
         const variants = {
-            primary: 'bg-green hover:bg-pink hover:text-white',
-            secondary: 'bg-purple text-white hover:bg-brown',
-            tertiary: 'bg-pink text-white hover:bg-purple',
-            menu: 'bg-blue-light hover:bg-brown hover:text-white',
+            primary: 'bg-linear-to-br/oklch from-green to-green/50 hover:from-pink hover:to-pink/75 hover:text-white',
+            secondary: 'bg-linear-to-br/oklch from-purple to-pink text-white hover:bg-linear-to-br hover:from-brown hover:to-brown-light',
+            tertiary: 'bg-linear-to-br/oklch from-pink to-orange text-white hover:from-purple hover:to-purple-light',
+            menu: 'bg-blue-light hover:bg-linear-to-br hover:from-brown hover:to-brown-light hover:text-white',
             invalid: 'bg-red text-white hover:bg-red-800',
         };
 
         const shapes = {
             pill: 'rounded-full px-5 py-3',
-            round: 'rounded-full p-2',
+            round: 'rounded-full p-2.5',
         };
 
         return `${base} ${variants[this.variant]} ${shapes[this.shape]}`;

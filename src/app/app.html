@@ -14,14 +14,14 @@
 
 @if ((authState.isAuthenticated$() && !authState.loading$())) {
     <nav
-        class="fixed bottom-5 left-0 right-0 mx-auto w-fit flex items-center gap-2 bg-blue-light p-1 rounded-full shadow-xl shadow-brown/25">
+        class="fixed bottom-5 left-0 right-0 mx-auto w-fit flex items-center gap-2 bg-blue-light border border-blue/50 p-2 rounded-full shadow-xl shadow-brown/25">
         @for (item of navItems; track item.icon) {
             <button
                 app-button
                 variant="menu"
                 shape="round"
                 [routerLink]="item.route"
-                routerLinkActive="bg-brown text-white"
+                routerLinkActive="bg-linear-to-br from-brown to-brown-light text-white"
                 [routerLinkActiveOptions]="{ exact: item.route === '' }"
             >
                 @switch (item.icon) {

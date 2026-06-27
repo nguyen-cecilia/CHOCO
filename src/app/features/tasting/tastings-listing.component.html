@@ -63,7 +63,7 @@
                     <button
                         app-button
                         (click)="setSortBy(option.id)"
-                        class="{{ sortBy() === option.id ? 'bg-pink text-white' : '' }}"
+                        class="{{ sortBy() === option.id ? 'from-pink to-pink/75 text-white' : '' }}"
                     >
                         {{ option.label }}
                         @if (sortBy() === option.id) {

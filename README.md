@@ -59,4 +59,4 @@ Tasting to taste listing:
 Profile / settings:
 - [x] Change currency
 - [ ] ~~More stats (?)~~
-- [ ] Dark mode
+- [ ] ~~Dark mode~~
