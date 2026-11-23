@@ -24,22 +24,22 @@
   "private": true,
   "packageManager": "npm@11.7.0",
   "dependencies": {
-    "@angular/common": "^21.0.0",
-    "@angular/compiler": "^21.0.0",
-    "@angular/core": "^21.0.0",
-    "@angular/forms": "^21.0.0",
-    "@angular/platform-browser": "^21.0.0",
-    "@angular/router": "^21.0.0",
-    "@angular/service-worker": "^21.0.0",
+    "@angular/common": "^21.2.26",
+    "@angular/compiler": "^21.2.26",
+    "@angular/core": "^21.2.26",
+    "@angular/forms": "^21.2.26",
+    "@angular/platform-browser": "^21.2.26",
+    "@angular/router": "^21.2.26",
+    "@angular/service-worker": "^21.2.26",
     "@lucide/angular": "^1.8.0",
     "@supabase/supabase-js": "^2.103.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular/build": "^21.0.4",
-    "@angular/cli": "^21.0.4",
-    "@angular/compiler-cli": "^21.0.0",
+    "@angular/build": "^21.2.30",
+    "@angular/cli": "^21.2.30",
+    "@angular/compiler-cli": "^21.2.26",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/postcss": "^4.1.12",
@@ -49,7 +49,7 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.12",
     "typescript": "~5.9.2",
-    "typescript-eslint": "8.59.2",
+    "typescript-eslint": "^8.73.0",
     "vitest": "^4.0.8"
   }
 }
