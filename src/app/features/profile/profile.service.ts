@@ -13,7 +13,7 @@ export interface Profile {
     providedIn: 'root',
 })
 export class ProfileService {
-    private PROFILE_TABLE_NAME = 'profile';
+    private PROFILE_TABLE_NAME = 'sc_profile';
     private AVATAR_BUCKET_NAME = 'avatars';
 
     async getProfile(userId: string): Promise<Profile | null> {

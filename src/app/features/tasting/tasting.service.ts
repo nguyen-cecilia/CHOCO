@@ -7,7 +7,7 @@ import {Tasting, TastingInput} from './tasting.model';
     providedIn: 'root',
 })
 export class TastingService {
-    private TASTING_TABLE_NAME = 'tasting';
+    private TASTING_TABLE_NAME = 'sc_tasting';
     private TASTING_PICTURES_BUCKET_NAME = 'tasting-pictures';
 
     async getTastings(userId: string): Promise<Tasting[] | null> {
